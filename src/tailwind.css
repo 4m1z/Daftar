@@ -1,0 +1,884 @@
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;500;700;800&family=Manrope:wght@400;500;600;700;800&family=Lora:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&family=Ubuntu+Mono:wght@400;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+    background: var(--app-bg);
+    color: var(--app-text);
+}
+
+html {
+    font-size: 16px;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+:root {
+    --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial;
+    --font-heading: "M PLUS Rounded 1c", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial;
+    --font-fa: "Vazirmatn", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial;
+    --font-serif: "Lora", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono: "Ubuntu Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+        monospace;
+
+    --app-bg: #f0e7db;
+    --app-surface: #f7f2ea;
+    --app-surface-raised: #fffefb;
+    --app-text: #1a202c;
+    --app-text-muted: #4a5568;
+    --app-text-dim: #718096;
+    --app-border: #e2e8f0;
+    --app-border-strong: #cbd5e0;
+    --app-accent: #2c7a7b;
+    --app-accent-strong: #285e61;
+    --app-accent-soft: rgba(136, 204, 202, 0.18);
+    --app-danger: #c53030;
+    --app-warning: #b7791f;
+    --app-success: #2f855a;
+    --app-shadow: 0 8px 24px rgba(26, 32, 44, 0.08);
+}
+
+:root {
+    color-scheme: light;
+}
+
+:root.dark {
+    color-scheme: dark;
+
+    --app-bg: #202023;
+    --app-surface: #252529;
+    --app-surface-raised: #2a2a2e;
+    --app-text: rgba(255, 255, 255, 0.92);
+    --app-text-muted: rgba(255, 255, 255, 0.7);
+    --app-text-dim: rgba(255, 255, 255, 0.5);
+    --app-border: rgba(255, 255, 255, 0.16);
+    --app-border-strong: rgba(255, 255, 255, 0.24);
+    --app-accent: #88ccca;
+    --app-accent-strong: #a7dad8;
+    --app-accent-soft: rgba(136, 204, 202, 0.16);
+    --app-danger: #fc8181;
+    --app-warning: #f6ad55;
+    --app-success: #68d391;
+    --app-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+}
+
+body {
+    font-family: var(--font-sans);
+}
+
+.dark body {
+    background-color: var(--app-bg);
+}
+
+:root {
+    --db-bg: #fff;
+    --db-surface: hsl(220deg 14% 96%);
+    --db-surface2: #fff;
+    --db-panel: #fff;
+    --db-border: hsl(0deg 0% 9% / 15%);
+    --db-border2: hsl(0deg 0% 9% / 22%);
+    --db-text: hsl(0deg 0% 0% / 87%);
+    --db-text2: hsl(0deg 0% 0% / 60%);
+    --db-text3: hsl(0deg 0% 0% / 40%);
+    --db-accent: hsl(217deg 91% 60%);
+    --db-accent2: hsl(262deg 83% 58%);
+    --db-danger: hsl(0deg 84% 60%);
+    --db-warning: hsl(43deg 96% 56%);
+    --db-success: hsl(142deg 71% 45%);
+    --db-shadow: 0 1.5px 3px -2px hsl(0deg 0% 0% / 40%), 0 4px 6px hsl(0deg 0% 0% / 20%),
+        0 8px 12px -1px hsl(0deg 0% 0% / 10%);
+    --db-shadow2: 0 2px 4px rgba(34, 36, 38, 0.12), 0 2px 10px rgba(34, 36, 38, 0.15);
+    --db-card-shadow: 0 1px 2px hsl(0deg 0% 9% / 15%);
+    --db-accent-grad: hsl(217deg 91% 60%);
+    --db-accent-soft: hsl(201deg 90% 27% / 20%);
+    --db-glow: none;
+    --db-page-glow: none;
+}
+
+.dashboard-dark {
+    --db-bg: hsl(0deg 0% 4%);
+    --db-surface: hsl(0deg 0% 9%);
+    --db-surface2: hsl(0deg 0% 9%);
+    --db-panel: hsl(0deg 0% 15%);
+    --db-border: hsl(0deg 0% 96% / 10%);
+    --db-border2: hsl(0deg 0% 96% / 22%);
+    --db-text: hsl(0deg 0% 98% / 87%);
+    --db-text2: hsl(0deg 0% 98% / 60%);
+    --db-text3: hsl(0deg 0% 98% / 40%);
+    --db-accent: hsl(213deg 94% 68% / 80%);
+    --db-accent2: hsl(255deg 92% 76%);
+    --db-danger: hsl(0deg 84% 60%);
+    --db-warning: hsl(43deg 96% 56%);
+    --db-success: hsl(142deg 71% 45%);
+    --db-shadow: 0 1.5px 3px -2px hsl(0deg 0% 0% / 40%), 0 4px 6px hsl(0deg 0% 0% / 20%),
+        0 8px 12px -1px hsl(0deg 0% 0% / 10%);
+    --db-shadow2: 0 2px 4px hsl(0deg 0% 0% / 20%), 0 2px 10px hsl(0deg 0% 0% / 30%);
+    --db-card-shadow: 0 1px 2px hsl(0deg 0% 9%);
+    --db-accent-grad: hsl(213deg 94% 68% / 80%);
+    --db-accent-soft: hsl(212deg 96% 78% / 20%);
+    --db-glow: none;
+    --db-page-glow: none;
+}
+
+/* Official Inkdrop default-light and default-dark dashboard palettes. */
+
+/* ─── Dashboard surface helpers ─────────────────────────────────────────────
+* Utility classes consumed by dashboard pages so they don't hardcode colours.
+* The website never uses these classes.
+* ──────────────────────────────────────────────────────────────────────────── */
+
+.db-page {
+    --app-danger: var(--db-danger);
+    --app-warning: var(--db-warning);
+    --app-success: var(--db-success);
+    --md-text: var(--db-text);
+    --md-text-muted: var(--db-text2);
+    --md-text-dim: var(--db-text3);
+    --md-accent: var(--db-accent);
+    --md-link: hsl(217deg 91% 60%);
+    --md-heading: hsl(0deg 0% 0% / 87%);
+    --md-border: hsl(0deg 0% 9% / 15%);
+    --md-border-strong: hsl(240deg 5% 84%);
+    --md-code-bg: rgba(0, 0, 0, 0.05);
+    --md-code-fg: hsl(0deg 0% 0% / 87%);
+    --md-block-bg: hsl(214deg 32% 91% / 10%);
+    --md-block-fg: hsl(0deg 0% 0% / 87%);
+    --md-block-border: hsl(213deg 27% 84% / 50%);
+    --md-quote-bar: hsl(240deg 5% 84%);
+    --md-quote-bg: rgba(0, 0, 0, 0.03);
+    --md-quote-fg: hsl(0deg 0% 0% / 60%);
+    --md-table-head-bg: rgba(0, 0, 0, 0.1);
+    --md-table-head-fg: hsl(0deg 0% 0% / 87%);
+    --md-table-row-alt: rgba(0, 0, 0, 0.05);
+    --md-hr: hsl(0deg 0% 9% / 15%);
+    --editor-fg: hsl(215deg 28% 17%);
+    --editor-comment: hsl(215deg 20% 65%);
+    --editor-keyword: hsl(262deg 83% 58%);
+    --editor-number: hsl(221deg 83% 53%);
+    --editor-string: hsl(142deg 76% 36%);
+    --editor-type: hsl(333deg 71% 51%);
+    --editor-function: hsl(192deg 91% 36%);
+    --editor-link: hsl(175deg 84% 32%);
+    background-color: var(--db-bg);
+    color: var(--db-text);
+    min-height: 100vh;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.db-accent-grad-bg {
+    background: var(--db-accent);
+}
+.db-accent-grad-text {
+    color: var(--db-accent);
+}
+.db-glow {
+    box-shadow: var(--db-glow);
+}
+
+.db-surface {
+    background: var(--db-surface);
+    border-color: var(--db-border);
+    color: var(--db-text);
+}
+
+.dashboard-dark .db-page {
+    --md-link: hsl(217deg 91% 60%);
+    --md-heading: hsl(0deg 0% 98% / 87%);
+    --md-border: hsl(0deg 0% 96% / 10%);
+    --md-border-strong: hsl(240deg 5% 26%);
+    --md-code-bg: rgba(255, 255, 255, 0.08);
+    --md-code-fg: hsl(0deg 0% 98% / 87%);
+    --md-block-bg: hsl(0deg 0% 25% / 20%);
+    --md-block-fg: hsl(0deg 0% 98% / 87%);
+    --md-block-border: hsl(213deg 97% 87% / 10%);
+    --md-quote-bar: hsl(240deg 5% 26%);
+    --md-quote-bg: rgba(255, 255, 255, 0.02);
+    --md-quote-fg: hsl(0deg 0% 98% / 60%);
+    --md-table-head-bg: rgba(255, 255, 255, 0.15);
+    --md-table-head-fg: hsl(0deg 0% 98% / 87%);
+    --md-table-row-alt: rgba(255, 255, 255, 0.08);
+    --md-hr: hsl(0deg 0% 96% / 10%);
+    --editor-fg: hsl(216deg 12% 84%);
+    --editor-comment: hsl(218deg 11% 65%);
+    --editor-keyword: hsl(255deg 92% 76%);
+    --editor-number: hsl(213deg 94% 68%);
+    --editor-string: hsl(158deg 64% 52%);
+    --editor-type: hsl(329deg 86% 70%);
+    --editor-function: hsl(187deg 92% 69%);
+    --editor-link: hsl(173deg 80% 40%);
+}
+
+.db-surface2 {
+    background: var(--db-surface2);
+    border-color: var(--db-border);
+    color: var(--db-text);
+}
+
+.db-border {
+    border-color: var(--db-border);
+}
+.db-border2 {
+    border-color: var(--db-border2);
+}
+.db-text {
+    color: var(--db-text);
+}
+.db-text2 {
+    color: var(--db-text2);
+}
+.db-text3 {
+    color: var(--db-text3);
+}
+.db-accent {
+    color: var(--db-accent);
+}
+.db-accent2 {
+    color: var(--db-accent2);
+}
+
+/* Craftz.dog-style highlighted text badge */
+.bio-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.38);
+    backdrop-filter: blur(4px);
+}
+
+.dark .bio-badge {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Section title underline */
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    text-decoration: underline;
+    text-decoration-color: #525252;
+    text-decoration-thickness: 4px;
+    text-underline-offset: 6px;
+}
+
+.dark .section-title {
+    text-decoration-color: #525252;
+}
+
+/* ProseMirror editor styles (unchanged for admin pages) */
+.pm-editor-surface {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    padding: 1rem;
+    color: inherit;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    outline: none;
+    white-space: pre-wrap;
+    overflow: auto;
+}
+
+.pm-markdown-editor {
+    font-family: var(--font-mono);
+    word-break: break-word;
+}
+
+.pm-editor-surface p,
+.pm-editor-surface h1,
+.pm-editor-surface h2,
+.pm-editor-surface h3,
+.pm-editor-surface h4,
+.pm-editor-surface h5,
+.pm-editor-surface h6,
+.pm-editor-surface ul,
+.pm-editor-surface ol,
+.pm-editor-surface blockquote,
+.pm-editor-surface pre {
+    margin: 0 0 0.9rem;
+}
+
+.pm-editor-surface h1,
+.pm-editor-surface h2,
+.pm-editor-surface h3 {
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+.pm-editor-surface h1 {
+    font-size: 1.85rem;
+}
+
+.pm-editor-surface h2 {
+    font-size: 1.45rem;
+}
+
+.pm-editor-surface h3 {
+    font-size: 1.2rem;
+}
+
+.pm-editor-surface blockquote {
+    border-left: 3px solid rgba(161, 161, 170, 0.6);
+    padding-left: 0.9rem;
+}
+
+.pm-editor-surface pre {
+    overflow-x: auto;
+    border-radius: 1rem;
+    background: rgba(24, 24, 27, 0.06);
+    padding: 0.9rem 1rem;
+    font-family: var(--font-mono);
+}
+
+.pm-editor-surface code {
+    font-family: var(--font-mono);
+}
+
+.dark .pm-editor-surface pre {
+    background: rgba(15, 23, 42, 0.95);
+}
+
+/* ─── Notes app ──────────────────────────────────────────────────────────── */
+
+/* Inherit color-scheme from the active theme so browsers render form
+ * controls, scrollbars etc with the correct palette. */
+.notes-app {
+    color-scheme: light;
+}
+
+.dashboard-dark .notes-app {
+    color-scheme: dark;
+}
+
+/* Focus mode — hide the app-wide hover strip + slide-in drawer while the
+ * notes page is in fullscreen/focus mode so the editor is truly distraction-free. */
+html[data-notes-focus="true"] [data-app-sidebar-trigger],
+html[data-notes-focus="true"] [data-app-sidebar-drawer] {
+    display: none !important;
+}
+
+/* Editor textarea inside notes */
+.notes-editor .pm-editor-surface {
+    background: transparent;
+    color: #abb2bf;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.75;
+    padding: 2rem 2.5rem;
+    caret-color: #528bff;
+}
+
+/* Markdown syntax color hints in raw editor */
+.notes-editor .pm-editor-surface::placeholder {
+    color: #3e4452;
+}
+
+/* ─── Markdown preview styles ───────────────────────────────────────────────
+ * Shared across p.notes, p.manage, and public blog posts. Uses CSS variables
+ * so it renders correctly in light and dark themes without
+ * hardcoding any colour. Class name: `.md-preview` (applied alongside the
+ * existing `.notes-preview` for compatibility).
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+:root {
+    --md-text: var(--app-text);
+    --md-text-muted: var(--app-text-muted);
+    --md-text-dim: var(--app-text-dim);
+    --md-accent: var(--app-accent);
+    --md-link: var(--app-accent-strong);
+    --md-heading: var(--app-text);
+    --md-border: var(--app-border);
+    --md-border-strong: var(--app-border-strong);
+    --md-code-bg: #ebe7dd;
+    --md-code-fg: #775445;
+    --md-block-bg: #e8e5dc;
+    --md-block-fg: #252823;
+    --md-block-border: #d2ccbf;
+    --md-quote-bar: var(--app-accent);
+    --md-quote-bg: #e7ebe2;
+    --md-quote-fg: var(--app-text-muted);
+    --md-table-head-bg: #e8e5dc;
+    --md-table-head-fg: var(--app-text);
+    --md-table-row-alt: rgba(255, 255, 255, 0.25);
+    --md-hr: var(--app-border);
+    --md-chrome-dot-1: #ff5f57;
+    --md-chrome-dot-2: #febc2e;
+    --md-chrome-dot-3: #28c840;
+    --md-image-shadow: var(--app-shadow);
+    /* highlight.js tokens (light — GitHub Light) */
+    --hl-comment: #6a737d;
+    --hl-keyword: #d73a49;
+    --hl-string: #032f62;
+    --hl-number: #005cc5;
+    --hl-function: #6f42c1;
+    --hl-variable: #e36209;
+    --hl-title: #22863a;
+    --hl-tag: #22863a;
+    --hl-attr: #6f42c1;
+    --hl-punctuation: #24292e;
+}
+
+.dashboard-dark {
+    --md-text: #d7d8cf;
+    --md-text-muted: #a8ad9f;
+    --md-text-dim: #7d8375;
+    --md-accent: #a8bb9d;
+    --md-link: #b6c9aa;
+    --md-heading: #f0efe7;
+    --md-border: #3b3e36;
+    --md-border-strong: #4b4f45;
+    --md-code-bg: #34372f;
+    --md-code-fg: #d7b39a;
+    --md-block-bg: #232520;
+    --md-block-fg: #e5e4dc;
+    --md-block-border: #3b3e36;
+    --md-quote-bar: #9fb294;
+    --md-quote-bg: #2d342b;
+    --md-quote-fg: #b7baae;
+    --md-table-head-bg: #34372f;
+    --md-table-head-fg: #ecebe3;
+    --md-table-row-alt: #292c26;
+    --md-hr: #3b3e36;
+    --md-image-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    /* highlight.js tokens (dark — One Dark) */
+    --hl-comment: #7f848e;
+    --hl-keyword: #c678dd;
+    --hl-string: #98c379;
+    --hl-number: #d19a66;
+    --hl-function: #61afef;
+    --hl-variable: #e06c75;
+    --hl-title: #61afef;
+    --hl-tag: #e06c75;
+    --hl-attr: #d19a66;
+    --hl-punctuation: #abb2bf;
+}
+
+/* ── Core preview styles — shared by `.notes-preview` and `.md-preview` */
+
+.notes-preview,
+.md-preview {
+    color: var(--md-text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.72;
+    width: 100%;
+}
+
+/* `.md-preview` (p.manage, public blog posts) stays centered with a readable
+ * max-width. `.notes-preview` (p.notes editor/preview) fills the full column. */
+.md-preview {
+    max-width: 46rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.notes-preview {
+    max-width: 52rem;
+    margin-inline: auto;
+}
+
+/* Headings */
+.notes-preview h1,
+.notes-preview h2,
+.notes-preview h3,
+.notes-preview h4,
+.notes-preview h5,
+.notes-preview h6,
+.md-preview h1,
+.md-preview h2,
+.md-preview h3,
+.md-preview h4,
+.md-preview h5,
+.md-preview h6 {
+    color: var(--md-heading);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-top: 1.8em;
+    margin-bottom: 0.7em;
+    line-height: 1.3;
+}
+
+.notes-preview h1,
+.md-preview h1 {
+    font-size: 2rem;
+}
+.notes-preview h2,
+.md-preview h2 {
+    font-size: 1.45rem;
+}
+.notes-preview h3,
+.md-preview h3 {
+    font-size: 1.18rem;
+}
+.notes-preview h4,
+.md-preview h4 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--md-text-muted);
+}
+
+/* Paragraphs */
+.notes-preview p,
+.md-preview p {
+    margin-bottom: 1em;
+}
+
+/* Emphasis */
+.notes-preview strong,
+.md-preview strong {
+    color: var(--md-heading);
+    font-weight: 700;
+}
+.notes-preview em,
+.md-preview em {
+    font-style: italic;
+}
+
+/* Links */
+.notes-preview a,
+.md-preview a {
+    color: var(--md-link);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--md-link) 40%, transparent);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+}
+.notes-preview a:hover,
+.md-preview a:hover {
+    text-decoration-color: var(--md-link);
+}
+
+/* Inline code (Inkdrop-style chip) */
+.notes-preview code,
+.md-preview code {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    color: var(--md-code-fg);
+    background: var(--md-code-bg);
+    border: 1px solid var(--md-border);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+}
+
+.notes-preview pre,
+.md-preview pre {
+    position: relative;
+    background: var(--md-block-bg);
+    color: var(--md-block-fg);
+    border: 1px solid var(--md-block-border);
+    border-radius: 6px;
+    padding: 1rem 1.15rem;
+    overflow-x: auto;
+    margin: 1.2em 0;
+}
+
+.notes-preview pre code,
+.md-preview pre code {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    font-size: 13px;
+    line-height: 1.7;
+    display: block;
+    white-space: pre;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+/* highlight.js token colours (for code blocks with a language) */
+.notes-preview pre code .hljs-comment,
+.notes-preview pre code .hljs-quote,
+.md-preview pre code .hljs-comment,
+.md-preview pre code .hljs-quote {
+    color: var(--hl-comment);
+    font-style: italic;
+}
+.notes-preview pre code .hljs-keyword,
+.notes-preview pre code .hljs-selector-tag,
+.notes-preview pre code .hljs-literal,
+.notes-preview pre code .hljs-section,
+.notes-preview pre code .hljs-link,
+.md-preview pre code .hljs-keyword,
+.md-preview pre code .hljs-selector-tag,
+.md-preview pre code .hljs-literal,
+.md-preview pre code .hljs-section,
+.md-preview pre code .hljs-link {
+    color: var(--hl-keyword);
+}
+.notes-preview pre code .hljs-string,
+.notes-preview pre code .hljs-regexp,
+.notes-preview pre code .hljs-attribute,
+.notes-preview pre code .hljs-template-tag,
+.md-preview pre code .hljs-string,
+.md-preview pre code .hljs-regexp,
+.md-preview pre code .hljs-attribute,
+.md-preview pre code .hljs-template-tag {
+    color: var(--hl-string);
+}
+.notes-preview pre code .hljs-number,
+.notes-preview pre code .hljs-built_in,
+.notes-preview pre code .hljs-builtin-name,
+.notes-preview pre code .hljs-type,
+.md-preview pre code .hljs-number,
+.md-preview pre code .hljs-built_in,
+.md-preview pre code .hljs-builtin-name,
+.md-preview pre code .hljs-type {
+    color: var(--hl-number);
+}
+.notes-preview pre code .hljs-function,
+.notes-preview pre code .hljs-title,
+.md-preview pre code .hljs-function,
+.md-preview pre code .hljs-title {
+    color: var(--hl-function);
+}
+.notes-preview pre code .hljs-variable,
+.notes-preview pre code .hljs-symbol,
+.notes-preview pre code .hljs-bullet,
+.md-preview pre code .hljs-variable,
+.md-preview pre code .hljs-symbol,
+.md-preview pre code .hljs-bullet {
+    color: var(--hl-variable);
+}
+.notes-preview pre code .hljs-tag,
+.notes-preview pre code .hljs-name,
+.md-preview pre code .hljs-tag,
+.md-preview pre code .hljs-name {
+    color: var(--hl-tag);
+}
+.notes-preview pre code .hljs-attr,
+.notes-preview pre code .hljs-property,
+.md-preview pre code .hljs-attr,
+.md-preview pre code .hljs-property {
+    color: var(--hl-attr);
+}
+.notes-preview pre code .hljs-meta,
+.notes-preview pre code .hljs-punctuation,
+.md-preview pre code .hljs-meta,
+.md-preview pre code .hljs-punctuation {
+    color: var(--hl-punctuation);
+}
+.notes-preview pre code .hljs-emphasis,
+.md-preview pre code .hljs-emphasis {
+    font-style: italic;
+}
+.notes-preview pre code .hljs-strong,
+.md-preview pre code .hljs-strong {
+    font-weight: 700;
+}
+
+/* Blockquote (Inkdrop-style left bar) */
+.notes-preview blockquote,
+.md-preview blockquote {
+    border-left: 3px solid var(--md-quote-bar);
+    background: var(--md-quote-bg);
+    padding: 0.6rem 1rem;
+    margin: 1em 0;
+    color: var(--md-quote-fg);
+    border-radius: 0 4px 4px 0;
+    font-style: normal;
+}
+.notes-preview blockquote p,
+.md-preview blockquote p {
+    margin-bottom: 0.5em;
+}
+.notes-preview blockquote p:last-child,
+.md-preview blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Lists */
+.notes-preview ul,
+.notes-preview ol,
+.md-preview ul,
+.md-preview ol {
+    padding-left: 1.6rem;
+    margin-bottom: 1em;
+}
+.notes-preview ul,
+.md-preview ul {
+    list-style: disc;
+}
+.notes-preview ol,
+.md-preview ol {
+    list-style: decimal;
+}
+.notes-preview li,
+.md-preview li {
+    margin-bottom: 0.35em;
+}
+.notes-preview li::marker,
+.md-preview li::marker {
+    color: var(--md-text-dim);
+}
+
+/* Task lists (GFM checkboxes — styled) */
+.notes-preview li:has(> input[type="checkbox"]),
+.md-preview li:has(> input[type="checkbox"]) {
+    list-style: none;
+    margin-left: -1.3rem;
+    padding-left: 1.3rem;
+    position: relative;
+}
+.notes-preview li input[type="checkbox"],
+.md-preview li input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.05em;
+    height: 1.05em;
+    border: 1.5px solid var(--md-border-strong);
+    border-radius: 4px;
+    background: transparent;
+    vertical-align: -0.18em;
+    margin-right: 0.45em;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s ease;
+}
+.notes-preview li input[type="checkbox"]:checked,
+.md-preview li input[type="checkbox"]:checked {
+    background: var(--md-accent);
+    border-color: var(--md-accent);
+}
+.notes-preview li input[type="checkbox"]:checked::after,
+.md-preview li input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 0px;
+    width: 4px;
+    height: 8px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Horizontal rule */
+.notes-preview hr,
+.md-preview hr {
+    border: none;
+    border-top: 1px solid var(--md-hr);
+    margin: 2em 0;
+}
+
+/* Tables */
+.notes-preview table,
+.md-preview table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.2em 0;
+    font-size: 14px;
+    border: 1px solid var(--md-border-strong);
+    border-radius: 6px;
+    overflow: hidden;
+}
+.notes-preview th,
+.notes-preview td,
+.md-preview th,
+.md-preview td {
+    border: 1px solid var(--md-border);
+    padding: 0.5em 0.85em;
+    text-align: left;
+}
+.notes-preview th,
+.md-preview th {
+    background: var(--md-table-head-bg);
+    color: var(--md-table-head-fg);
+    font-weight: 700;
+}
+.notes-preview tbody tr:nth-child(2n),
+.md-preview tbody tr:nth-child(2n) {
+    background: var(--md-table-row-alt);
+}
+
+/* Images */
+.notes-preview img,
+.md-preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: var(--md-image-shadow);
+    margin: 1em auto;
+    display: block;
+}
+
+.notes-preview .mermaid-block,
+.md-preview .mermaid-block,
+.notes-preview .excalidraw-block,
+.md-preview .excalidraw-block {
+    position: relative;
+    background: #d0d1cd;
+    border: 1px solid var(--md-block-border);
+    border-radius: 6px;
+    overflow: auto;
+    padding: 1.25rem;
+    margin: 1em 0;
+}
+
+.notes-preview .excalidraw-edit-button,
+.md-preview .excalidraw-edit-button {
+    position: absolute;
+    z-index: 2;
+    top: 0.75rem;
+    right: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 0.375rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.15s ease;
+}
+
+.notes-preview .excalidraw-edit-button:hover,
+.notes-preview .excalidraw-edit-button:focus-visible,
+.md-preview .excalidraw-edit-button:hover,
+.md-preview .excalidraw-edit-button:focus-visible {
+    background: rgba(0, 0, 0, 0.88);
+}
+
+.notes-preview .mermaid-block > svg,
+.md-preview .mermaid-block > svg,
+.notes-preview .excalidraw-block > svg,
+.md-preview .excalidraw-block > svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    margin: auto;
+}
+
+.notes-preview .diagram-error-label,
+.md-preview .diagram-error-label {
+    color: var(--md-quote-fg);
+    font-size: 0.8rem;
+    margin: 0 0 0.75rem;
+}
+
+@media (max-width: 640px) {
+    .notes-preview,
+    .md-preview {
+        font-size: 14px;
+    }
+
+    .notes-preview .mermaid-block,
+    .md-preview .mermaid-block,
+    .notes-preview .excalidraw-block,
+    .md-preview .excalidraw-block {
+        padding: 0.75rem;
+    }
+}

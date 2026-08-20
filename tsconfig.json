@@ -1,0 +1,32 @@
+{
+  "exclude": ["./dist", "./node_modules"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "file-routes.d.ts",
+    "server.js"
+  ],
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "jsxImportSource": "@solidjs/web",
+    "resolveJsonModule": true,
+    "target": "ES2022",
+    "strict": true,
+    "allowJs": true,
+    "checkJs": false,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": { "~/*": ["./src/*"] },
+    "noEmit": true,
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "rootDirs": ["."]
+  }
+}
