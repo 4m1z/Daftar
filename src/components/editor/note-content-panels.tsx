@@ -1,9 +1,10 @@
-import { createEffect, createSignal, onCleanup, Show, type Accessor } from "solid-js";
+import { createEffect, createSignal, lazy, onCleanup, Show, type Accessor } from "solid-js";
 
-import { Markdown } from "~/components/editor/markdown";
-import { NoteEditor } from "~/components/editor/note-editor";
 import type { NoteItem } from "~/lib/types/notes";
 import type { Theme } from "~/utils/theme";
+
+const Markdown = lazy(() => import("~/components/editor/markdown").then((module) => ({ default: module.Markdown })));
+const NoteEditor = lazy(() => import("~/components/editor/note-editor").then((module) => ({ default: module.NoteEditor })));
 
 /** CodeMirror editor bound to the active note. Remounts when the note changes. */
 export function NoteEditorPanel(props: {
