@@ -1,6 +1,6 @@
 import { createEffect } from "solid-js";
 
-import { useDashboardTheme } from "~/components/dashboard-theme";
+import { useDashboardTheme } from "~/components/ui/dashboard-theme";
 
 import { useEditorMode } from "./use-editor-mode";
 import { useNoteDeletion } from "./use-note-deletion";

@@ -1,6 +1,6 @@
 import { For } from "solid-js";
 
-import { SmallPlusIcon } from "~/components/icons";
+import { SmallPlusIcon } from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 import { relativeTime } from "~/lib/utils/notes";
 

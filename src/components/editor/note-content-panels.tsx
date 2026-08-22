@@ -1,7 +1,7 @@
 import { createEffect, createSignal, onCleanup, Show, type Accessor } from "solid-js";
 
-import { Markdown } from "~/components/markdown";
-import { NoteEditor } from "~/components/note-editor";
+import { Markdown } from "~/components/editor/markdown";
+import { NoteEditor } from "~/components/editor/note-editor";
 import type { NoteItem } from "~/lib/types/notes";
 import type { Theme } from "~/utils/theme";
 

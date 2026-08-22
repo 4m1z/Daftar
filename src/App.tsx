@@ -1,7 +1,7 @@
 import { Title } from "@solidjs/meta";
 import { Loading } from "solid-js";
 
-import { NotesLoadingSkeleton } from "~/components/notes/notes-loading-skeleton";
+import { NotesLoadingSkeleton } from "~/components/feedback/notes-loading-skeleton";
 
 import { Router } from "./router";
 import "./tailwind.css";

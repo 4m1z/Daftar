@@ -1,6 +1,6 @@
 import { For, Show } from "solid-js";
 
-import { NoteIcon, SmallPlusIcon, TrashIcon } from "~/components/icons";
+import { NoteIcon, SmallPlusIcon, TrashIcon } from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 import { noteSnippet, relativeTime } from "~/lib/utils/notes";
 

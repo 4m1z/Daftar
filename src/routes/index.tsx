@@ -1,12 +1,12 @@
 import { Title } from "@solidjs/meta";
 import { Show } from "solid-js";
 
-import { DeleteConfirmDialog } from "~/components/notes/delete-confirm-dialog";
-import { MobileNotesNavigation } from "~/components/notes/mobile-notes-navigation";
-import { NoteEditorPane } from "~/components/notes/note-editor-pane";
-import { NotebookSidebar } from "~/components/notes/notebook-sidebar";
-import { NotesListSidebar } from "~/components/notes/notes-list-sidebar";
-import { NotesSearchDialog } from "~/components/notes/notes-search-dialog";
+import { DeleteConfirmDialog } from "~/components/dialogs/delete-confirm-dialog";
+import { NotesSearchDialog } from "~/components/dialogs/notes-search-dialog";
+import { NoteEditorPane } from "~/components/editor/note-editor-pane";
+import { MobileNotesNavigation } from "~/components/layout/mobile-notes-navigation";
+import { NotebookSidebar } from "~/components/layout/notebook-sidebar";
+import { NotesListSidebar } from "~/components/layout/notes-list-sidebar";
 import { useNotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 
 export default function NotesPage() {

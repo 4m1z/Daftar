@@ -9,7 +9,7 @@ import { tags } from "@lezer/highlight";
 import { vim } from "@replit/codemirror-vim";
 import { createEffect, createSignal, Show, onSettled } from "solid-js";
 
-import { ExcalidrawEditorModal, type ExcalidrawScene } from "~/components/excalidraw-editor-modal";
+import { ExcalidrawEditorModal, type ExcalidrawScene } from "~/components/editor/excalidraw-editor-modal";
 import type { Theme } from "~/utils/theme";
 
 function findExcalidrawFenceAt(state: EditorState, position: number) {

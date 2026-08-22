@@ -8,7 +8,7 @@ import {
     parseExcalidrawScene,
     replaceExcalidrawFence,
     type ExcalidrawScene,
-} from "~/components/excalidraw-editor-modal";
+} from "~/components/editor/excalidraw-editor-modal";
 
 marked.use({ gfm: true, breaks: false });
 marked.use(

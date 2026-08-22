@@ -8,9 +8,9 @@ import {
     NoteIcon,
     SmallPlusIcon,
     SplitViewIcon,
-} from "~/components/icons";
-import { NoteEditorPanel, NotePreviewPanel } from "~/components/notes/note-content-panels";
-import { EditorModeToggle } from "~/components/notes/editor-mode-toggle";
+} from "~/components/ui/icons";
+import { EditorModeToggle } from "~/components/editor/editor-mode-toggle";
+import { NoteEditorPanel, NotePreviewPanel } from "~/components/editor/note-content-panels";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 import type { SplitMode } from "~/lib/types/notes";
 import { wordCount } from "~/lib/utils/notes";
