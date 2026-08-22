@@ -1,23 +1,18 @@
 # Notes
 
-- A standalone, SSR-rendered note-taking application built with Solid 2.
-- Notes are stored in a local SQLite database
-- features:
-   - Markdown, syntax highlighting, Mermaid diagrams
-   - Excalidraw drawings, Vim keybindings
-   - search, autosave, split preview, and light/dark themes
+A standalone Solid 2 note-taking app backed by SQLite, with Markdown, syntax highlighting, Mermaid, Excalidraw, Vim keybindings, search, autosave, split preview, and themes.
 
 ## Requirements
 
-- Node.js 22 or newer
+- Bun 1.2.23+ or Docker
 
 ## Setup
 
 ```sh
 cp .env.example .env
-npm install
-npm run setup
-npm run dev
+bun install
+bun run setup
+bun run dev
 ```
 
 Open <http://localhost:3000>. The app starts empty; select **New notebook** to create your first note.
@@ -25,11 +20,12 @@ Open <http://localhost:3000>. The app starts empty; select **New notebook** to c
 ## Production
 
 ```sh
-npm run build
-npm start
+bun run setup
+bun run build
+bun run start
 ```
 
-Set `DATABASE_URL` to a persistent SQLite file before running `npm run setup`. This standalone version intentionally has no accounts or authentication, so do not expose it directly to an untrusted network without adding access control.
+Set `DATABASE_URL` to a persistent SQLite file. This app has no authentication, so do not expose it to an untrusted network.
 
 ### Docker
 
@@ -42,8 +38,8 @@ Open <http://localhost:8080>. The SQLite database is persisted in `./data/notes.
 ## Tests
 
 ```sh
-npm test
-npm run typecheck
+bun run test
+bun run typecheck
 ```
 
 ## License

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "node server.js",
+    "start": "bun server.js",
     "serve": "vite preview",
     "setup": "prisma generate && prisma migrate deploy",
     "postinstall": "prisma generate",
