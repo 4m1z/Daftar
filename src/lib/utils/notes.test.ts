@@ -33,8 +33,8 @@ describe("uid", () => {
         expect(values.size).toBe(100);
     });
 
-    it("uses a timestamp-random shape", () => {
-        expect(uid()).toMatch(/^[a-z0-9]+-[a-z0-9]{1,4}$/);
+    it("returns a UUID", () => {
+        expect(uid()).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
     });
 });
 

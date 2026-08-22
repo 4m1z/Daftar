@@ -3,7 +3,7 @@ import { getRequestEvent } from "@solidjs/web";
 
 import { deviceLayoutFromHeaders } from "~/lib/utils/device";
 
-export const getDeviceLayout = query(() => {
+export const getDeviceLayout = query(async () => {
     "use server";
     const headers = getRequestEvent()?.request.headers ?? new Headers();
     return deviceLayoutFromHeaders(headers);

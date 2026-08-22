@@ -1,9 +1,9 @@
 import { DEFAULT_NOTEBOOK_COLOR, MAX_SEARCH_RESULTS, NOTEBOOK_COLOR_COUNT } from "~/lib/constants/notes";
 import type { NoteItem, PendingDelete, Project, SearchResult } from "~/lib/types/notes";
 
-/** Generates a short, collision-resistant client-side id. */
+/** Generates a collision-resistant client-side id. */
 export function uid() {
-    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+    return crypto.randomUUID();
 }
 
 /** Picks the next notebook accent color based on how many notebooks exist. */

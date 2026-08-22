@@ -1,8 +1,6 @@
 export const NOTEBOOK_COLOR_COUNT = 8;
 export const DEFAULT_NOTEBOOK_COLOR = "1";
 
-export const NOTES_LAST_STATE_KEY = "notes-last-state";
-
 /** Debounce (ms) before persisting note edits. */
 export const NOTE_SAVE_DELAY = 600;
 
