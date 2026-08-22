@@ -52,8 +52,12 @@ export function useNotesStore(route: NotesRoute) {
         const formData = new FormData();
         for (const [key, value] of Object.entries(values)) formData.set(key, value);
         setInFlight((count) => count + 1);
-        void runNotesAction(formData)
-            .catch((error) => console.error("[notes] mutation failed", error))
+        return runNotesAction(formData)
+            .then(() => true)
+            .catch((error) => {
+                console.error("[notes] mutation failed", error);
+                return false;
+            })
             .finally(() => setInFlight((count) => Math.max(0, count - 1)));
     };
 

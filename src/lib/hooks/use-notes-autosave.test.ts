@@ -22,8 +22,8 @@ function baseNote(overrides: Partial<NoteItem> = {}): NoteItem {
     return { id: "n1", title: "Title", content: "Body", updatedAt: "2024-01-01T00:00:00.000Z", ...overrides };
 }
 
-function setup(initial?: { note?: NoteItem | null; project?: Project | null }) {
-    const submit = vi.fn();
+function setup(initial?: { note?: NoteItem | null; project?: Project | null; submitResult?: boolean }) {
+    const submit = vi.fn().mockResolvedValue(initial?.submitResult ?? true);
     const initialNote = initial?.note === undefined ? baseNote() : initial.note;
     const initialProject = initial?.project ?? null;
 
@@ -51,7 +51,14 @@ function setup(initial?: { note?: NoteItem | null; project?: Project | null }) {
     const { dispose } = renderReactive(() => useNotesAutosave(store));
     cleanup = dispose;
 
-    return { submit, setActiveNote, setActiveProject, setIsSaving, getSavedNote: () => savedNote };
+    return {
+        submit,
+        setActiveNote,
+        setActiveProject,
+        setIsSaving,
+        getSavedNote: () => savedNote,
+        setSavedNote: (value: string) => (savedNote = value),
+    };
 }
 
 describe("useNotesAutosave", () => {
@@ -66,6 +73,7 @@ describe("useNotesAutosave", () => {
         // Nothing fires until the debounce window passes.
         expect(submit).not.toHaveBeenCalled();
         vi.advanceTimersByTime(NOTE_SAVE_DELAY);
+        await flush();
 
         expect(submit).toHaveBeenCalledTimes(1);
         expect(submit).toHaveBeenCalledWith({
@@ -123,6 +131,43 @@ describe("useNotesAutosave", () => {
             title: "Title",
             content: "two",
         });
+    });
+
+    it("flushes a pending edit before switching notes", async () => {
+        vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+        const { submit, setActiveNote, setSavedNote } = setup();
+        await flush();
+
+        setActiveNote(baseNote({ content: "pending" }));
+        await flush();
+        vi.advanceTimersByTime(NOTE_SAVE_DELAY - 100);
+
+        const nextNote = baseNote({ id: "n2", content: "next" });
+        setSavedNote(serializeNote(nextNote));
+        setActiveNote(nextNote);
+        await flush();
+
+        expect(submit).toHaveBeenCalledTimes(1);
+        expect(submit).toHaveBeenCalledWith({
+            intent: "updateNote",
+            noteId: "n1",
+            title: "Title",
+            content: "pending",
+        });
+    });
+
+    it("does not mark a failed save as saved", async () => {
+        vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+        const original = baseNote();
+        const { setActiveNote, getSavedNote } = setup({ submitResult: false });
+        await flush();
+
+        setActiveNote(baseNote({ content: "unsaved" }));
+        await flush();
+        vi.advanceTimersByTime(NOTE_SAVE_DELAY);
+        await flush();
+
+        expect(getSavedNote()).toBe(serializeNote(original));
     });
 
     it("saves a renamed notebook after its debounce", async () => {
