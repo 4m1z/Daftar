@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 
-import { flushEffects, renderReactive } from "./test-support";
+import { flushEffects, renderReactive } from "~/lib/test-utils";
 import { useSplitLayout } from "./use-split-layout";
 
 let cleanup: (() => void) | undefined;

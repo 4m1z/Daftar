@@ -1,6 +1,6 @@
 import { createEffect } from "solid-js";
 
-import { NOTE_SAVE_DELAY, PROJECT_SAVE_DELAY } from "./constants";
+import { NOTE_SAVE_DELAY, PROJECT_SAVE_DELAY } from "~/lib/constants/notes";
 import type { NotesStore } from "./use-notes-store";
 
 /**

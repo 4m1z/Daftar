@@ -1,7 +1,7 @@
 import { createEffect, createMemo, createSignal, onSettled, type Accessor } from "solid-js";
 
-import { searchNotes } from "./helpers";
-import type { Project, SearchResult } from "./types";
+import type { Project, SearchResult } from "~/lib/types/notes";
+import { searchNotes } from "~/lib/utils/notes";
 
 type SearchDeps = {
     projects: Accessor<Project[]>;

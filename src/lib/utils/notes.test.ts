@@ -14,9 +14,9 @@ import {
     sortNotesByUpdated,
     uid,
     wordCount,
-} from "./helpers";
-import { COLORS, MAX_SEARCH_RESULTS } from "./constants";
-import type { NoteItem, Project } from "./types";
+} from "./notes";
+import { COLORS, MAX_SEARCH_RESULTS } from "~/lib/constants/notes";
+import type { NoteItem, Project } from "~/lib/types/notes";
 
 function note(overrides: Partial<NoteItem> = {}): NoteItem {
     return { id: "n1", title: "Title", content: "Body", updatedAt: "2024-01-01T00:00:00.000Z", ...overrides };

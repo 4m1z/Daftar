@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from "@solidjs/router";
 
-import type { Project, SplitMode } from "./types";
+import type { Project, SplitMode } from "~/lib/types/notes";
 
 export type NotesViewMode = "view-mode" | "edit-mode" | "both";
 

@@ -7,7 +7,7 @@ import { NoteEditorPane } from "~/components/notes/note-editor-pane";
 import { NotebookSidebar } from "~/components/notes/notebook-sidebar";
 import { NotesListSidebar } from "~/components/notes/notes-list-sidebar";
 import { NotesSearchDialog } from "~/components/notes/notes-search-dialog";
-import { useNotesWorkspace } from "~/lib/notes/use-notes-workspace";
+import { useNotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 
 export default function NotesPage() {
   const ws = useNotesWorkspace();

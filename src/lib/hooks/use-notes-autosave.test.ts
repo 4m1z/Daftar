@@ -1,10 +1,10 @@
 import { createSignal } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { NOTE_SAVE_DELAY, PROJECT_SAVE_DELAY } from "./constants";
-import { serializeNote, serializeProject } from "./helpers";
-import { flushEffects, renderReactive } from "./test-support";
-import type { NoteItem, Project } from "./types";
+import { NOTE_SAVE_DELAY, PROJECT_SAVE_DELAY } from "~/lib/constants/notes";
+import { flushEffects, renderReactive } from "~/lib/test-utils";
+import type { NoteItem, Project } from "~/lib/types/notes";
+import { serializeNote, serializeProject } from "~/lib/utils/notes";
 import { useNotesAutosave } from "./use-notes-autosave";
 import type { NotesStore } from "./use-notes-store";
 

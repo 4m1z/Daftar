@@ -1,6 +1,6 @@
 import { createEffect, createSignal } from "solid-js";
 
-import type { PendingDelete } from "./types";
+import type { PendingDelete } from "~/lib/types/notes";
 
 type DeletionDeps = {
     deleteProject: (id: string) => void;

@@ -1,8 +1,8 @@
 import { For, Show } from "solid-js";
 
 import { NoteIcon, SmallPlusIcon, TrashIcon } from "~/components/icons";
-import { noteSnippet, relativeTime } from "~/lib/notes/helpers";
-import type { NotesWorkspace } from "~/lib/notes/use-notes-workspace";
+import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
+import { noteSnippet, relativeTime } from "~/lib/utils/notes";
 
 /** Desktop middle rail: notebook name, note list, and per-note actions. */
 export function NotesListSidebar(props: { workspace: NotesWorkspace }) {

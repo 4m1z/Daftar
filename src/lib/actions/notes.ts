@@ -9,8 +9,8 @@ import {
     renameNotebook,
     updateNote,
 } from "~/models/notes-workspace.server";
-import { COLORS } from "./constants";
-import type { NotesLoaderData } from "./types";
+import { COLORS } from "~/lib/constants/notes";
+import type { NotesLoaderData } from "~/lib/types/notes";
 
 export const getNotesData = query(async () => {
     "use server";

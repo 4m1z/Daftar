@@ -11,9 +11,9 @@ import {
 } from "~/components/icons";
 import { NoteEditorPanel, NotePreviewPanel } from "~/components/notes/note-content-panels";
 import { EditorModeToggle } from "~/components/notes/editor-mode-toggle";
-import { wordCount } from "~/lib/notes/helpers";
-import type { SplitMode } from "~/lib/notes/types";
-import type { NotesWorkspace } from "~/lib/notes/use-notes-workspace";
+import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
+import type { SplitMode } from "~/lib/types/notes";
+import { wordCount } from "~/lib/utils/notes";
 
 const SPLIT_MODES: SplitMode[] = ["edit", "split", "preview"];
 

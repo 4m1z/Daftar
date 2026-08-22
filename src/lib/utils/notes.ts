@@ -1,5 +1,5 @@
-import { COLORS, MAX_SEARCH_RESULTS } from "./constants";
-import type { NoteItem, PendingDelete, Project, SearchResult } from "./types";
+import { COLORS, MAX_SEARCH_RESULTS } from "~/lib/constants/notes";
+import type { NoteItem, PendingDelete, Project, SearchResult } from "~/lib/types/notes";
 
 /** Generates a short, collision-resistant client-side id. */
 export function uid() {

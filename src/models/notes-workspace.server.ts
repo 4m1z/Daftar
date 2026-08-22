@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 
 import { prisma } from "~/db.server";
-import type { Project } from "~/lib/notes/types";
+import type { Project } from "~/lib/types/notes";
 
 export async function listNotesProjects(): Promise<Project[]> {
     const notebooks = await prisma.notebook.findMany({

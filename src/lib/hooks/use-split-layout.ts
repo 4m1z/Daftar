@@ -1,7 +1,7 @@
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal } from "solid-js";
 
-import type { SplitMode } from "./types";
+import type { SplitMode } from "~/lib/types/notes";
 
 const MIN_SPLIT_PCT = 10;
 const MAX_SPLIT_PCT = 90;

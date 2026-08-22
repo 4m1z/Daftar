@@ -1,7 +1,7 @@
 import { Show, type Accessor } from "solid-js";
 
-import { pendingDeleteName, pendingDeleteTitle } from "~/lib/notes/helpers";
-import type { PendingDelete } from "~/lib/notes/types";
+import type { PendingDelete } from "~/lib/types/notes";
+import { pendingDeleteName, pendingDeleteTitle } from "~/lib/utils/notes";
 
 /** Modal confirming deletion of a notebook or a note. */
 export function DeleteConfirmDialog(props: {

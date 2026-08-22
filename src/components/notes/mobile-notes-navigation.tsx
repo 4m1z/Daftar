@@ -1,8 +1,8 @@
 import { For } from "solid-js";
 
 import { SmallPlusIcon } from "~/components/icons";
-import { relativeTime } from "~/lib/notes/helpers";
-import type { NotesWorkspace } from "~/lib/notes/use-notes-workspace";
+import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
+import { relativeTime } from "~/lib/utils/notes";
 
 /** Compact single-column layout with horizontal tab strips shown below the xl breakpoint. */
 export function MobileNotesNavigation(props: { workspace: NotesWorkspace }) {

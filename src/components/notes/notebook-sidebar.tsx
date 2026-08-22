@@ -2,7 +2,7 @@ import { For, Show } from "solid-js";
 
 import { DashboardThemeToggle } from "~/components/dashboard-theme";
 import { FolderIcon, SmallPlusIcon, TrashIcon } from "~/components/icons";
-import type { NotesWorkspace } from "~/lib/notes/use-notes-workspace";
+import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 
 /** Desktop left rail: notebook list, theme toggle, and save status. */
 export function NotebookSidebar(props: { workspace: NotesWorkspace }) {

@@ -1,8 +1,8 @@
 import { createSignal } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { flushEffects, renderReactive } from "./test-support";
-import type { Project } from "./types";
+import { flushEffects, renderReactive } from "~/lib/test-utils";
+import type { Project } from "~/lib/types/notes";
 import { useNotesSearch } from "./use-notes-search";
 
 let cleanup: (() => void) | undefined;

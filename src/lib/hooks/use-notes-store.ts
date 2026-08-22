@@ -1,9 +1,9 @@
 import { useAction } from "@solidjs/router";
 import { createEffect, createMemo, createSignal, untrack } from "solid-js";
 
-import { getNotesData, notesAction } from "./actions";
-import { nextColor, orderNotes, serializeNote, serializeProject, sortNotesByUpdated, uid } from "./helpers";
-import type { NoteItem, Project } from "./types";
+import { getNotesData, notesAction } from "~/lib/actions/notes";
+import type { NoteItem, Project } from "~/lib/types/notes";
+import { nextColor, orderNotes, serializeNote, serializeProject, sortNotesByUpdated, uid } from "~/lib/utils/notes";
 import type { NotesRoute } from "./use-notes-route";
 
 /**

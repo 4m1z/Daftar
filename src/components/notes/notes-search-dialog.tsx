@@ -1,6 +1,6 @@
 import { For, Show, type Accessor } from "solid-js";
 
-import type { SearchResult } from "~/lib/notes/types";
+import type { SearchResult } from "~/lib/types/notes";
 
 /** Command-palette style fuzzy search across all notebooks and notes. */
 export function NotesSearchDialog(props: {

@@ -2,7 +2,7 @@ import { createEffect, createSignal, onCleanup, Show, type Accessor } from "soli
 
 import { Markdown } from "~/components/markdown";
 import { NoteEditor } from "~/components/note-editor";
-import type { NoteItem } from "~/lib/notes/types";
+import type { NoteItem } from "~/lib/types/notes";
 import type { Theme } from "~/utils/theme";
 
 /** CodeMirror editor bound to the active note. Remounts when the note changes. */
