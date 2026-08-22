@@ -15,14 +15,14 @@ function initialTheme() {
     return themeFromCookieHeader(getRequestEvent()?.request.headers.get("cookie"));
 }
 
-type DashboardThemeContextValue = {
+type ThemeContextValue = {
     theme: () => Theme;
     setTheme: (theme: Theme) => void;
 };
 
-const DashboardThemeContext = createContext<DashboardThemeContextValue>();
+const ThemeContext = createContext<ThemeContextValue>();
 
-export function DashboardThemeProvider(props: ParentProps) {
+export function ThemeProvider(props: ParentProps) {
     const [theme, setThemeState] = createSignal<Theme>(initialTheme());
 
     const setTheme = (value: Theme) => {
@@ -31,18 +31,18 @@ export function DashboardThemeProvider(props: ParentProps) {
         applyThemeClass(value);
     };
     return (
-        <DashboardThemeContext value={{ theme, setTheme }}>
+        <ThemeContext value={{ theme, setTheme }}>
             {props.children}
-        </DashboardThemeContext>
+        </ThemeContext>
     );
 }
 
-export function useDashboardTheme() {
-    return useContext(DashboardThemeContext);
+export function useTheme() {
+    return useContext(ThemeContext);
 }
 
-export function DashboardThemeToggle() {
-    const { theme, setTheme } = useDashboardTheme();
+export function ThemeToggle() {
+    const { theme, setTheme } = useTheme();
     const label = () => theme() === "dark" ? "Switch to light theme" : "Switch to dark theme";
     return (
         <button type="button" onClick={() => setTheme(nextTheme(theme()))} title={label()} aria-label={label()} class="flex h-6 w-6 items-center justify-center rounded transition-colors hover:bg-black/10 dark:hover:bg-white/10" style={{ color: "var(--db-text2)" }}>

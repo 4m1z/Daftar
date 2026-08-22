@@ -1,6 +1,6 @@
 import { For, Show } from "solid-js";
 
-import { DashboardThemeToggle } from "~/components/ui/dashboard-theme";
+import { ThemeToggle } from "~/components/ui/theme";
 import { FolderIcon, SmallPlusIcon, TrashIcon } from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 
@@ -30,7 +30,7 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                         <SmallPlusIcon />
                     </button>
                 </div>
-                <DashboardThemeToggle />
+                <ThemeToggle />
             </div>
 
             <div class="flex min-h-0 flex-1 flex-col overflow-y-auto py-0.5">

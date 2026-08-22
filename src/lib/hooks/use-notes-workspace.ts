@@ -1,6 +1,6 @@
 import { createEffect } from "solid-js";
 
-import { useDashboardTheme } from "~/components/ui/dashboard-theme";
+import { useTheme } from "~/components/ui/theme";
 
 import { useEditorMode } from "./use-editor-mode";
 import { useNoteDeletion } from "./use-note-deletion";
@@ -11,7 +11,7 @@ import { useNotesStore } from "./use-notes-store";
 import { useSplitLayout } from "./use-split-layout";
 
 export function useNotesWorkspace() {
-    const { theme } = useDashboardTheme();
+    const { theme } = useTheme();
 
     const route = useNotesRoute();
     const store = useNotesStore(route);
