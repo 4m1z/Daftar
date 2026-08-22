@@ -10,6 +10,7 @@ import {
     SplitViewIcon,
 } from "~/components/icons";
 import { NoteEditorPanel, NotePreviewPanel } from "~/components/notes/note-content-panels";
+import { EditorModeToggle } from "~/components/notes/editor-mode-toggle";
 import { wordCount } from "~/lib/notes/helpers";
 import type { SplitMode } from "~/lib/notes/types";
 import type { NotesWorkspace } from "~/lib/notes/use-notes-workspace";
@@ -74,6 +75,7 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace }) {
                         <span class="mr-3 text-[11px] tabular-nums" style={{ color: "var(--db-text3)" }}>
                             {wordCount(ws.activeNote()?.content)}w
                         </span>
+                        <EditorModeToggle enabled={ws.vimMode()} onChange={ws.setVimMode} />
                         <For each={SPLIT_MODES}>
                             {(mode) => (
                                 <button
@@ -113,6 +115,7 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace }) {
                                 note={ws.activeNote}
                                 onChange={(value) => ws.patchNote({ content: value })}
                                 theme={ws.theme}
+                                vimMode={ws.vimMode}
                             />
                         </div>
                     </Show>
@@ -130,6 +133,7 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace }) {
                                 note={ws.activeNote}
                                 onChange={(value) => ws.patchNote({ content: value })}
                                 theme={ws.theme}
+                                vimMode={ws.vimMode}
                             />
                         </div>
                         <button

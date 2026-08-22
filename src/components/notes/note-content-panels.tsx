@@ -10,6 +10,7 @@ export function NoteEditorPanel(props: {
     note: Accessor<NoteItem | null>;
     onChange: (value: string) => void;
     theme: Accessor<Theme>;
+    vimMode: Accessor<boolean>;
 }) {
     return (
         <Show when={props.note()?.id} keyed>
@@ -18,6 +19,7 @@ export function NoteEditorPanel(props: {
                     initialValue={props.note()?.content ?? ""}
                     onChange={props.onChange}
                     theme={props.theme()}
+                    vimMode={props.vimMode()}
                 />
             )}
         </Show>

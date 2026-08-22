@@ -2,6 +2,7 @@ import { For, Show } from "solid-js";
 
 import { EditIcon, EyeIcon, SmallPlusIcon, SplitViewIcon } from "~/components/icons";
 import { NoteEditorPanel, NotePreviewPanel } from "~/components/notes/note-content-panels";
+import { EditorModeToggle } from "~/components/notes/editor-mode-toggle";
 import { relativeTime } from "~/lib/notes/helpers";
 import type { NotesWorkspace } from "~/lib/notes/use-notes-workspace";
 
@@ -88,6 +89,7 @@ export function MobileNotesLayout(props: { workspace: NotesWorkspace }) {
                             style={{ color: "var(--db-text)" }}
                         />
                         <div class="flex items-center gap-1">
+                            <EditorModeToggle enabled={ws.vimMode()} onChange={ws.setVimMode} />
                             <button
                                 type="button"
                                 onClick={() => ws.setSplitMode("edit")}
@@ -131,6 +133,7 @@ export function MobileNotesLayout(props: { workspace: NotesWorkspace }) {
                                     note={ws.activeNote}
                                     onChange={(value) => ws.patchNote({ content: value })}
                                     theme={ws.theme}
+                                    vimMode={ws.vimMode}
                                 />
                             </div>
                         </Show>
@@ -153,6 +156,7 @@ export function MobileNotesLayout(props: { workspace: NotesWorkspace }) {
                                         note={ws.activeNote}
                                         onChange={(value) => ws.patchNote({ content: value })}
                                         theme={ws.theme}
+                                        vimMode={ws.vimMode}
                                     />
                                 </div>
                                 <div class="min-h-0 flex-1 overflow-auto">

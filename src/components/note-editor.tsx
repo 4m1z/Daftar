@@ -157,11 +157,13 @@ export function NoteEditor(props: {
     onChange: (value: string) => void;
     placeholder?: string;
     theme: Theme;
+    vimMode: boolean;
 }) {
     let container: HTMLDivElement | undefined;
     let view: EditorView | undefined;
     let syncingValue = false;
     const themeCompartment = new Compartment();
+    const vimCompartment = new Compartment();
     const [drawing, setDrawing] = createSignal<{
         initialScene: ExcalidrawScene | null;
         replaceRange: { from: number; to: number } | null;
@@ -222,7 +224,7 @@ export function NoteEditor(props: {
         const state = EditorState.create({
             doc: props.initialValue,
             extensions: [
-                vim(),
+                vimCompartment.of(props.vimMode ? vim() : []),
                 drawSelection(),
                 history(),
                 markdown({ base: markdownLanguage, codeLanguages: languages }),
@@ -247,6 +249,13 @@ export function NoteEditor(props: {
         () => props.theme,
         (theme) => {
             view?.dispatch({ effects: themeCompartment.reconfigure(getThemeExtensions(theme)) });
+        },
+    );
+
+    createEffect(
+        () => props.vimMode,
+        (enabled) => {
+            view?.dispatch({ effects: vimCompartment.reconfigure(enabled ? vim() : []) });
         },
     );
 

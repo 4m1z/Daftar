@@ -2,6 +2,7 @@ import { createEffect } from "solid-js";
 
 import { useDashboardTheme } from "~/components/dashboard-theme";
 
+import { useEditorMode } from "./use-editor-mode";
 import { useNoteDeletion } from "./use-note-deletion";
 import { useNotesAutosave } from "./use-notes-autosave";
 import { useNotesSearch } from "./use-notes-search";
@@ -27,6 +28,7 @@ export function useNotesWorkspace() {
     );
 
     const layout = useSplitLayout();
+    const editorMode = useEditorMode();
 
     const search = useNotesSearch({
         projects: store.projects,
@@ -61,6 +63,7 @@ export function useNotesWorkspace() {
         patchNote: store.patchNote,
         // editor layout
         ...layout,
+        ...editorMode,
         splitMode: route.splitMode,
         setSplitMode: route.setSplitMode,
         // search palette
