@@ -1,6 +1,11 @@
 # Notes
 
-A standalone, SSR-rendered note-taking application built with Solid 2. Notes are stored in a local SQLite database and support Markdown, syntax highlighting, Mermaid diagrams, Excalidraw drawings, Vim keybindings, search, autosave, split preview, and light/dark themes.
+- A standalone, SSR-rendered note-taking application built with Solid 2.
+- Notes are stored in a local SQLite database
+- features:
+   - Markdown, syntax highlighting, Mermaid diagrams
+   - Excalidraw drawings, Vim keybindings
+   - search, autosave, split preview, and light/dark themes
 
 ## Requirements
 
