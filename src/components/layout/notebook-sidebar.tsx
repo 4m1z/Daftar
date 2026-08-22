@@ -9,7 +9,7 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
     const ws = props.workspace;
     return (
         <div
-            class={`hidden w-[200px] shrink-0 flex-col border-r 2xl:w-[220px] ${ws.focusMode() ? "" : "xl:flex"}`}
+            class={`w-[200px] shrink-0 flex-col border-r 2xl:w-[220px] ${ws.focusMode() ? "hidden" : "flex"}`}
             style={{ background: "var(--db-bg)", "border-color": "var(--db-border)" }}
         >
             <div

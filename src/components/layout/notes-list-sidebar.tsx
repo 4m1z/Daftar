@@ -9,7 +9,7 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
     const ws = props.workspace;
     return (
         <div
-            class={`hidden w-[320px] shrink-0 flex-col border-r 2xl:w-[340px] ${ws.focusMode() ? "" : "xl:flex"}`}
+            class={`w-[320px] shrink-0 flex-col border-r 2xl:w-[340px] ${ws.focusMode() ? "hidden" : "flex"}`}
             style={{ background: "var(--db-surface)", "border-color": "var(--db-border)" }}
         >
             <div

@@ -4,11 +4,11 @@ import { SmallPlusIcon } from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 import { relativeTime } from "~/lib/utils/notes";
 
-/** Compact single-column layout with horizontal tab strips shown below the xl breakpoint. */
+/** Compact navigation rendered only for requests classified as mobile. */
 export function MobileNotesNavigation(props: { workspace: NotesWorkspace }) {
     const ws = props.workspace;
     return (
-        <div class="flex w-full shrink-0 flex-col overflow-hidden xl:hidden">
+        <div class="flex w-full shrink-0 flex-col overflow-hidden">
             <div
                 class="flex shrink-0 items-center gap-1.5 overflow-x-auto border-b px-3 py-2"
                 style={{ background: "var(--db-bg)", "border-color": "var(--db-border)" }}
