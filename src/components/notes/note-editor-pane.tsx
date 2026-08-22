@@ -31,19 +31,19 @@ function SplitModeIcon(props: { mode: SplitMode }) {
     );
 }
 
-/** Desktop editor column: title bar, view-mode controls, and edit/preview panes. */
+/** Shared editor column: title bar, view-mode controls, and responsive edit/preview panes. */
 export function NoteEditorPane(props: { workspace: NotesWorkspace }) {
     const ws = props.workspace;
     return (
         <div
             ref={ws.registerEditorColumn}
-            class="hidden min-w-0 flex-1 flex-col overflow-hidden xl:flex"
+            class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
             style={{ background: "var(--db-surface2)" }}
         >
             <Show
                 when={ws.activeNote()}
                 fallback={
-                    <div class="flex flex-1 flex-col items-center justify-center gap-4">
+                    <div class="flex min-h-0 flex-1 flex-col items-center justify-center gap-4">
                         <NoteIcon />
                         <p class="text-[13px]" style={{ color: "var(--db-text3)" }}>
                             Select a note or create a new one
@@ -61,7 +61,7 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace }) {
                 }
             >
                 <div
-                    class="flex h-11 shrink-0 items-center justify-between border-b px-4"
+                    class="flex h-11 shrink-0 items-center justify-between border-b px-3 xl:px-4"
                     style={{ "border-color": "var(--db-border)" }}
                 >
                     <input
@@ -71,8 +71,8 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace }) {
                         class="min-w-0 flex-1 bg-transparent text-[14px] font-semibold outline-none"
                         style={{ color: "var(--db-text)", "caret-color": "var(--db-accent)" }}
                     />
-                    <div class="flex shrink-0 items-center gap-1 pl-4">
-                        <span class="mr-3 text-[11px] tabular-nums" style={{ color: "var(--db-text3)" }}>
+                    <div class="flex shrink-0 items-center gap-1 pl-2 xl:pl-4">
+                        <span class="mr-3 hidden text-[11px] tabular-nums sm:inline" style={{ color: "var(--db-text3)" }}>
                             {wordCount(ws.activeNote()?.content)}w
                         </span>
                         <EditorModeToggle enabled={ws.vimMode()} onChange={ws.setVimMode} />
@@ -108,7 +108,7 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace }) {
                     </div>
                 </div>
 
-                <div class="flex min-h-0 flex-1 overflow-hidden">
+                <div class="flex min-h-0 flex-1 flex-col overflow-hidden xl:flex-row">
                     <Show when={ws.splitMode() === "edit"}>
                         <div class="notes-editor min-h-0 flex-1 overflow-hidden">
                             <NoteEditorPanel
@@ -126,8 +126,8 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace }) {
                     </Show>
                     <Show when={ws.splitMode() === "split"}>
                         <div
-                            class="notes-editor min-h-0 shrink-0 overflow-hidden"
-                            style={{ width: `${ws.splitPct()}%` }}
+                            class="notes-editor h-1/2 min-h-0 w-full shrink-0 overflow-hidden border-b xl:h-full xl:w-[var(--split-pct)] xl:border-b-0"
+                            style={{ "--split-pct": `${ws.splitPct()}%`, "border-color": "var(--db-border)" }}
                         >
                             <NoteEditorPanel
                                 note={ws.activeNote}
@@ -145,7 +145,7 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace }) {
                                 ws.nudgeSplit(event.key === "ArrowRight" ? 5 : -5);
                             }}
                             aria-label="Resize editor and preview panes"
-                            class="relative z-10 w-px shrink-0 cursor-col-resize bg-[var(--db-border)] transition-colors before:absolute before:-inset-x-2 before:inset-y-0 hover:bg-[var(--db-accent)]"
+                            class="relative z-10 hidden w-px shrink-0 cursor-col-resize bg-[var(--db-border)] transition-colors before:absolute before:-inset-x-2 before:inset-y-0 hover:bg-[var(--db-accent)] xl:block"
                             title="Drag to resize"
                         />
                         <div class="min-h-0 min-w-0 flex-1 overflow-auto">

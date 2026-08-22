@@ -1,8 +1,8 @@
 import { Title } from "@solidjs/meta";
-import { createSignal, onSettled, Show } from "solid-js";
+import { Show } from "solid-js";
 
 import { DeleteConfirmDialog } from "~/components/notes/delete-confirm-dialog";
-import { MobileNotesLayout } from "~/components/notes/mobile-notes-layout";
+import { MobileNotesNavigation } from "~/components/notes/mobile-notes-navigation";
 import { NoteEditorPane } from "~/components/notes/note-editor-pane";
 import { NotebookSidebar } from "~/components/notes/notebook-sidebar";
 import { NotesListSidebar } from "~/components/notes/notes-list-sidebar";
@@ -11,15 +11,6 @@ import { useNotesWorkspace } from "~/lib/notes/use-notes-workspace";
 
 export default function NotesPage() {
   const ws = useNotesWorkspace();
-  const [desktop, setDesktop] = createSignal(false);
-
-  onSettled(() => {
-    const query = window.matchMedia("(min-width: 1280px)");
-    const sync = () => setDesktop(query.matches);
-    sync();
-    query.addEventListener("change", sync);
-    return () => query.removeEventListener("change", sync);
-  });
 
   return (
     <>
@@ -42,12 +33,11 @@ export default function NotesPage() {
           moveIndex={ws.moveSearchIndex}
           registerInput={ws.registerSearchInput}
         />
-        <main class="notes-app db-page flex h-screen w-full overflow-hidden antialiased">
-          <Show when={desktop()} fallback={<MobileNotesLayout workspace={ws} />}>
-            <NotebookSidebar workspace={ws} />
-            <NotesListSidebar workspace={ws} />
-            <NoteEditorPane workspace={ws} />
-          </Show>
+        <main class="notes-app db-page flex h-screen w-full flex-col overflow-hidden antialiased xl:flex-row">
+          <MobileNotesNavigation workspace={ws} />
+          <NotebookSidebar workspace={ws} />
+          <NotesListSidebar workspace={ws} />
+          <NoteEditorPane workspace={ws} />
         </main>
       </Show>
     </>
