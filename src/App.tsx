@@ -13,7 +13,7 @@ export default function App() {
             <Router>
                 {(props) => (
                     <>
-                        <Title>Notes</Title>
+                        <Title>Daftar</Title>
                         <Loading fallback={<NotesLoadingSkeleton />}>{props.children}</Loading>
                     </>
                 )}

@@ -1,5 +1,5 @@
 {
-  "name": "my-note-taking-application",
+  "name": "daftar",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -8,7 +8,8 @@
     "build": "vite build",
     "start": "bun server.js",
     "serve": "vite preview",
-    "setup": "prisma generate && prisma migrate deploy",
+    "setup": "prisma generate && prisma migrate deploy && bun run seed",
+    "seed": "bun prisma/seed.ts",
     "postinstall": "prisma generate",
     "typecheck": "tsc",
     "test": "vitest run",

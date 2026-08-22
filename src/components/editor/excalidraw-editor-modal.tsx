@@ -25,7 +25,7 @@ function initialData(scene: ExcalidrawScene | null): ExcalidrawScene {
         id: scene?.id ?? sceneId(),
         type: "excalidraw",
         version: 2,
-        source: "my-note-taking-application",
+        source: "daftar",
         elements: scene?.elements ?? [],
         appState: scene?.appState ?? { viewBackgroundColor: "#ffffff" },
         files: scene?.files ?? {},
@@ -38,7 +38,7 @@ function toFencedBlock(scene: ExcalidrawScene) {
         type: "excalidraw",
         id: scene.id ?? sceneId(),
         version: 2,
-        source: "my-note-taking-application",
+        source: "daftar",
         elements: scene.elements ?? [],
         appState: {
             viewBackgroundColor: appState.viewBackgroundColor ?? "#ffffff",

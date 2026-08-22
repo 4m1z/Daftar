@@ -131,8 +131,6 @@ body {
     --notebook-color-8: #91a9b8;
 }
 
-/* Official Inkdrop default-light and default-dark dashboard palettes. */
-
 /* ─── Dashboard surface helpers ─────────────────────────────────────────────
 * Utility classes consumed by dashboard pages so they don't hardcode colours.
 * The website never uses these classes.
@@ -398,7 +396,6 @@ body {
     text-decoration-color: var(--md-link);
 }
 
-/* Inline code (Inkdrop-style chip) */
 .notes-preview code,
 .md-preview code {
     font-family: var(--font-mono);
@@ -517,7 +514,6 @@ body {
     font-weight: 700;
 }
 
-/* Blockquote (Inkdrop-style left bar) */
 .notes-preview blockquote,
 .md-preview blockquote {
     border-left: 3px solid var(--md-quote-bar);

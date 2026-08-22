@@ -16,7 +16,7 @@ export default function NotesPage() {
 
   return (
     <>
-      <Title>Notes</Title>
+      <Title>Daftar</Title>
       <Show when={ws.data()}>
         <DeleteConfirmDialog
           pending={ws.pendingDelete}

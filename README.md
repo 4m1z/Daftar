@@ -1,4 +1,4 @@
-# Notes
+# Daftar
 
 A standalone Solid 2 note-taking app backed by SQLite, with Markdown, syntax highlighting, Mermaid, Excalidraw, Vim keybindings, search, autosave, split preview, and themes.
 
@@ -15,7 +15,7 @@ bun run setup
 bun run dev
 ```
 
-Open <http://localhost:3000>. The app starts empty; select **New notebook** to create your first note.
+Open <http://localhost:3000>. Fresh databases include a showcase note that tours Daftar's features.
 
 ## Production
 
