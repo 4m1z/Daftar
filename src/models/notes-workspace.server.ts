@@ -4,7 +4,7 @@ import { prisma } from "~/db.server";
 import type { Project } from "~/lib/notes/types";
 
 export async function listNotesProjects(): Promise<Project[]> {
-    const notebooks = await prisma.notesNotebook.findMany({
+    const notebooks = await prisma.notebook.findMany({
         orderBy: [{ sortOrder: "asc" }, { updatedAt: "asc" }],
         select: {
             id: true,
@@ -37,7 +37,7 @@ export async function createNotebook({
     firstNoteId: string;
 }) {
     return prisma.$transaction(async (tx) => {
-        await tx.notesNotebook.create({
+        await tx.notebook.create({
             data: {
                 id,
                 name,
@@ -53,21 +53,21 @@ export async function createNotebook({
 }
 
 export async function renameNotebook(id: string, name: string) {
-    const result = await prisma.notesNotebook.updateMany({ where: { id }, data: { name } });
+    const result = await prisma.notebook.updateMany({ where: { id }, data: { name } });
     if (result.count === 0) throw new Response("Notebook not found", { status: 404 });
     return { updatedAt: new Date() };
 }
 
 export async function deleteNotebook(id: string) {
-    await prisma.notesNotebook.deleteMany({ where: { id } });
+    await prisma.notebook.deleteMany({ where: { id } });
     return { updatedAt: new Date() };
 }
 
 export async function createNote({ notebookId, noteId }: { notebookId: string; noteId: string }) {
-    const notebook = await prisma.notesNotebook.findUnique({ where: { id: notebookId }, select: { id: true } });
+    const notebook = await prisma.notebook.findUnique({ where: { id: notebookId }, select: { id: true } });
     if (!notebook) throw new Response("Notebook not found", { status: 404 });
 
-    return prisma.notesEntry.create({
+    return prisma.note.create({
         data: {
             id: noteId,
             notebookId,
@@ -80,18 +80,18 @@ export async function createNote({ notebookId, noteId }: { notebookId: string; n
 }
 
 export async function updateNote(noteId: string, { title, content }: { title: string; content: string }) {
-    const result = await prisma.notesEntry.updateMany({ where: { id: noteId }, data: { title, content } });
+    const result = await prisma.note.updateMany({ where: { id: noteId }, data: { title, content } });
     if (result.count === 0) throw new Response("Note not found", { status: 404 });
     return { updatedAt: new Date() };
 }
 
 export async function deleteNote(noteId: string) {
-    await prisma.notesEntry.deleteMany({ where: { id: noteId } });
+    await prisma.note.deleteMany({ where: { id: noteId } });
     return { updatedAt: new Date() };
 }
 
 async function nextNotebookSortOrder(client: Prisma.TransactionClient | typeof prisma) {
-    const notebook = await client.notesNotebook.findFirst({
+    const notebook = await client.notebook.findFirst({
         orderBy: { sortOrder: "desc" },
         select: { sortOrder: true },
     });
@@ -99,7 +99,7 @@ async function nextNotebookSortOrder(client: Prisma.TransactionClient | typeof p
 }
 
 async function nextNoteSortOrder(client: Prisma.TransactionClient | typeof prisma, notebookId: string) {
-    const note = await client.notesEntry.findFirst({
+    const note = await client.note.findFirst({
         where: { notebookId },
         orderBy: { sortOrder: "desc" },
         select: { sortOrder: true },
