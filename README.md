@@ -31,6 +31,14 @@ npm start
 
 Set `DATABASE_URL` to a persistent SQLite file before running `npm run setup`. This standalone version intentionally has no accounts or authentication, so do not expose it directly to an untrusted network without adding access control.
 
+### Docker
+
+```sh
+docker compose up --build
+```
+
+Open <http://localhost:8080>. The SQLite database is persisted in `./data/notes.db`, and pending Prisma migrations are applied whenever the container starts.
+
 ## Tests
 
 ```sh

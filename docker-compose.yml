@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: file:/myapp/data/notes.db
+    volumes:
+      - ./data:/myapp/data
+    ports:
+      - "8080:8080"

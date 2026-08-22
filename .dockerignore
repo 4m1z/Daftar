@@ -1,0 +1,8 @@
+.git
+.env
+data
+dist
+node_modules
+npm-debug.log*
+prisma/*.db
+prisma/*.db-journal
