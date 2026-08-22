@@ -11,7 +11,7 @@ import { useNotesStore } from "./use-notes-store";
 import { useSplitLayout } from "./use-split-layout";
 
 export function useNotesWorkspace() {
-    const { theme, setTheme } = useDashboardTheme();
+    const { theme } = useDashboardTheme();
 
     const route = useNotesRoute();
     const store = useNotesStore(route);
@@ -45,7 +45,6 @@ export function useNotesWorkspace() {
     return {
         // theme
         theme,
-        setTheme,
         // data store
         data: store.data,
         projects: store.projects,
