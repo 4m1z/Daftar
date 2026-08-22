@@ -1,4 +1,5 @@
-export const COLORS = ["#718369", "#a27d58", "#8a9690", "#a06f65", "#84778f", "#6f8978", "#a66f63", "#667f91"];
+export const NOTEBOOK_COLOR_COUNT = 8;
+export const DEFAULT_NOTEBOOK_COLOR = "1";
 
 export const NOTES_LAST_STATE_KEY = "notes-last-state";
 

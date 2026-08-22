@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
     fuzzyMatch,
     nextColor,
+    notebookColor,
     noteSnippet,
     orderNotes,
     pendingDeleteName,
@@ -15,7 +16,7 @@ import {
     uid,
     wordCount,
 } from "./notes";
-import { COLORS, MAX_SEARCH_RESULTS } from "~/lib/constants/notes";
+import { MAX_SEARCH_RESULTS, NOTEBOOK_COLOR_COUNT } from "~/lib/constants/notes";
 import type { NoteItem, Project } from "~/lib/types/notes";
 
 function note(overrides: Partial<NoteItem> = {}): NoteItem {
@@ -39,9 +40,16 @@ describe("uid", () => {
 
 describe("nextColor", () => {
     it("cycles through the palette by project count", () => {
-        expect(nextColor([])).toBe(COLORS[0]);
-        expect(nextColor(Array(1).fill(project()))).toBe(COLORS[1]);
-        expect(nextColor(Array(COLORS.length).fill(project()))).toBe(COLORS[0]);
+        expect(nextColor([])).toBe("1");
+        expect(nextColor(Array(1).fill(project()))).toBe("2");
+        expect(nextColor(Array(NOTEBOOK_COLOR_COUNT).fill(project()))).toBe("1");
+    });
+});
+
+describe("notebookColor", () => {
+    it("resolves palette keys to theme-aware CSS tokens", () => {
+        expect(notebookColor("3")).toBe("var(--notebook-color-3)");
+        expect(notebookColor("unknown")).toBe("var(--notebook-color-1)");
     });
 });
 

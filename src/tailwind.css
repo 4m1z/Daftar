@@ -96,6 +96,14 @@ body {
     --db-accent-soft: hsl(201deg 90% 27% / 20%);
     --db-glow: none;
     --db-page-glow: none;
+    --notebook-color-1: #718369;
+    --notebook-color-2: #a27d58;
+    --notebook-color-3: #8a9690;
+    --notebook-color-4: #a06f65;
+    --notebook-color-5: #84778f;
+    --notebook-color-6: #6f8978;
+    --notebook-color-7: #a66f63;
+    --notebook-color-8: #667f91;
 }
 
 .dashboard-dark {
@@ -121,6 +129,14 @@ body {
     --db-accent-soft: hsl(212deg 96% 78% / 20%);
     --db-glow: none;
     --db-page-glow: none;
+    --notebook-color-1: #a8b7a1;
+    --notebook-color-2: #c7a37f;
+    --notebook-color-3: #b0bbb6;
+    --notebook-color-4: #c3948b;
+    --notebook-color-5: #a99db2;
+    --notebook-color-6: #9db5a6;
+    --notebook-color-7: #c6948b;
+    --notebook-color-8: #91a9b8;
 }
 
 /* Official Inkdrop default-light and default-dark dashboard palettes. */

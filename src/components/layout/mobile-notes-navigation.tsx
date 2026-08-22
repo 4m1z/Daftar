@@ -2,7 +2,7 @@ import { For } from "solid-js";
 
 import { SmallPlusIcon } from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
-import { relativeTime } from "~/lib/utils/notes";
+import { notebookColor, relativeTime } from "~/lib/utils/notes";
 
 /** Compact navigation rendered only for requests classified as mobile. */
 export function MobileNotesNavigation(props: { workspace: NotesWorkspace }) {
@@ -25,7 +25,10 @@ export function MobileNotesNavigation(props: { workspace: NotesWorkspace }) {
                                 color: project.id === ws.selectedProject() ? "var(--db-text)" : "var(--db-text3)",
                             }}
                         >
-                            <span class="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: project.color }} />
+                            <span
+                                class="h-1.5 w-1.5 shrink-0 rounded-full"
+                                style={{ background: notebookColor(project.color) }}
+                            />
                             {project.name}
                         </button>
                     )}

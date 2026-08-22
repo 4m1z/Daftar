@@ -1,6 +1,7 @@
 import { For, Show, type Accessor } from "solid-js";
 
 import type { SearchResult } from "~/lib/types/notes";
+import { notebookColor } from "~/lib/utils/notes";
 
 /** Command-palette style fuzzy search across all notebooks and notes. */
 export function NotesSearchDialog(props: {
@@ -114,7 +115,7 @@ export function NotesSearchDialog(props: {
                                                 >
                                                     <span
                                                         class="h-1.5 w-1.5 shrink-0 rounded-full"
-                                                        style={{ background: result.projectColor }}
+                                                        style={{ background: notebookColor(result.projectColor) }}
                                                     />
                                                     <span class="truncate">{result.projectName}</span>
                                                     <span style={{ color: "var(--db-text3)" }}>›</span>

@@ -1,4 +1,4 @@
-import { COLORS, MAX_SEARCH_RESULTS } from "~/lib/constants/notes";
+import { DEFAULT_NOTEBOOK_COLOR, MAX_SEARCH_RESULTS, NOTEBOOK_COLOR_COUNT } from "~/lib/constants/notes";
 import type { NoteItem, PendingDelete, Project, SearchResult } from "~/lib/types/notes";
 
 /** Generates a short, collision-resistant client-side id. */
@@ -8,7 +8,15 @@ export function uid() {
 
 /** Picks the next notebook accent color based on how many notebooks exist. */
 export function nextColor(projects: Project[]) {
-    return COLORS[projects.length % COLORS.length] ?? COLORS[0];
+    return String((projects.length % NOTEBOOK_COLOR_COUNT) + 1);
+}
+
+export function notebookColor(color: string) {
+    const index = Number(color);
+    const paletteColor = Number.isInteger(index) && index >= 1 && index <= NOTEBOOK_COLOR_COUNT
+        ? color
+        : DEFAULT_NOTEBOOK_COLOR;
+    return `var(--notebook-color-${paletteColor})`;
 }
 
 /** Humanizes an ISO timestamp into a short relative label. */

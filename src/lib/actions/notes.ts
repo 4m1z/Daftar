@@ -9,7 +9,7 @@ import {
     renameNotebook,
     updateNote,
 } from "~/models/notes-workspace.server";
-import { COLORS } from "~/lib/constants/notes";
+import { DEFAULT_NOTEBOOK_COLOR } from "~/lib/constants/notes";
 import type { NotesLoaderData } from "~/lib/types/notes";
 
 export const getNotesData = query(async () => {
@@ -35,7 +35,7 @@ export const notesAction = action(async (formData: FormData) => {
             result = await createNotebook({
                 id: String(formData.get("projectId") ?? ""),
                 name: String(formData.get("name") ?? "New notebook"),
-                color: String(formData.get("color") ?? COLORS[0]),
+                color: String(formData.get("color") ?? DEFAULT_NOTEBOOK_COLOR),
                 firstNoteId: String(formData.get("noteId") ?? ""),
             });
             break;
