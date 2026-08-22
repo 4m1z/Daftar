@@ -1,19 +1,22 @@
-import { createEffect, createSignal, onSettled } from "solid-js";
+import { getRequestEvent } from "@solidjs/web";
+import { createSignal } from "solid-js";
 
-import { applyThemeClass, nextTheme, storeTheme, type Theme } from "~/utils/theme";
+import {
+    applyThemeClass,
+    nextTheme,
+    storeTheme,
+    themeFromCookieHeader,
+    themeFromDocument,
+    type Theme,
+} from "~/utils/theme";
+
+function initialTheme() {
+    if (typeof document !== "undefined") return themeFromDocument();
+    return themeFromCookieHeader(getRequestEvent()?.request.headers.get("cookie"));
+}
 
 export function useDashboardTheme() {
-    const [theme, setThemeState] = createSignal<Theme>("light");
-
-    onSettled(() => {
-        setThemeState(window.localStorage.getItem("dashboard-theme") === "dark" ? "dark" : "light");
-    });
-    createEffect(
-        () => theme(),
-        (value) => {
-            applyThemeClass(value);
-        },
-    );
+    const [theme, setThemeState] = createSignal<Theme>(initialTheme());
 
     const setTheme = (value: Theme) => {
         setThemeState(value);
