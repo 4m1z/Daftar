@@ -6,17 +6,20 @@ import type { Project, SearchResult } from "./types";
 type SearchDeps = {
     projects: Accessor<Project[]>;
     selectNote: (projectId: string, noteId: string) => void;
+    query: Accessor<string>;
+    setQuery: (query: string) => void;
 };
 
 /**
  * Command-palette style fuzzy search across every notebook and note. Owns the
- * dialog open/query/highlight state, the global Cmd/Ctrl+F shortcut, autofocus,
+ * dialog open/highlight state, the URL-backed query, the global Cmd/Ctrl+F shortcut, autofocus,
  * and result selection (which drives the store's selection setters).
  */
 export function useNotesSearch(deps: SearchDeps) {
     const [searchOpen, setSearchOpen] = createSignal(false);
-    const [searchQuery, setSearchQuery] = createSignal("");
     const [searchIndex, setSearchIndex] = createSignal(0);
+    const searchQuery = deps.query;
+    const setSearchQuery = deps.setQuery;
 
     let searchInputRef: HTMLInputElement | undefined;
     const registerSearchInput = (element: HTMLInputElement) => (searchInputRef = element);
@@ -32,7 +35,6 @@ export function useNotesSearch(deps: SearchDeps) {
     );
 
     const openSearch = () => {
-        setSearchQuery("");
         setSearchIndex(0);
         setSearchOpen(true);
     };

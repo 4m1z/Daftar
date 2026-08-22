@@ -30,11 +30,12 @@ const projectsFixture: Project[] = [
     },
 ];
 
-function setup() {
+function setup(initialQuery = "") {
     const [projects] = createSignal<Project[]>(projectsFixture);
+    const [query, setQuery] = createSignal(initialQuery);
     const selectNote = vi.fn();
 
-    const { result, dispose } = renderReactive(() => useNotesSearch({ projects, selectNote }));
+    const { result, dispose } = renderReactive(() => useNotesSearch({ projects, selectNote, query, setQuery }));
     cleanup = dispose;
     return { search: result, selectNote };
 }
@@ -56,16 +57,15 @@ describe("useNotesSearch", () => {
         expect(results[0].noteId).toBe("n3");
     });
 
-    it("openSearch resets state and opens the dialog", async () => {
-        const { search } = setup();
-        search.setSearchQuery("stale");
+    it("openSearch preserves the URL query and resets the highlighted result", async () => {
+        const { search } = setup("routing");
         search.setSearchIndex(5);
 
         search.openSearch();
         await flushEffects();
 
         expect(search.searchOpen()).toBe(true);
-        expect(search.searchQuery()).toBe("");
+        expect(search.searchQuery()).toBe("routing");
         expect(search.searchIndex()).toBe(0);
     });
 
@@ -97,7 +97,7 @@ describe("useNotesSearch", () => {
     });
 
     it("selecting a result navigates to the note and closes", async () => {
-        const { search, selectNote } = setup();
+        const { search, selectNote } = setup("routing");
         search.setSearchOpen(true);
         await flushEffects();
 
@@ -114,6 +114,7 @@ describe("useNotesSearch", () => {
 
         expect(selectNote).toHaveBeenCalledWith("p1", "n2");
         expect(search.searchOpen()).toBe(false);
+        expect(search.searchQuery()).toBe("routing");
     });
 
     it("opens on Ctrl+F and closes on Escape", async () => {

@@ -6,10 +6,15 @@ export type NotesViewMode = "view-mode" | "edit-mode" | "both";
 
 const VIEW_MODES = new Set<NotesViewMode>(["view-mode", "edit-mode", "both"]);
 
-export const notesNotebookPath = (notebookId: string) => `/?notebook=${encodeURIComponent(notebookId)}`;
+const searchPath = (query: string | undefined) => query ? `&search=${encodeURIComponent(query)}` : "";
 
-export const notesNotePath = (notebookId: string, noteId: string, mode: NotesViewMode = "edit-mode") =>
-    `/?notebook=${encodeURIComponent(notebookId)}&note=${encodeURIComponent(noteId)}&mode=${mode}`;
+const notesRootPath = (query: string | undefined) => query ? `/?search=${encodeURIComponent(query)}` : "/";
+
+export const notesNotebookPath = (notebookId: string, query?: string) =>
+    `/?notebook=${encodeURIComponent(notebookId)}${searchPath(query)}`;
+
+export const notesNotePath = (notebookId: string, noteId: string, mode: NotesViewMode = "edit-mode", query?: string) =>
+    `/?notebook=${encodeURIComponent(notebookId)}&note=${encodeURIComponent(noteId)}&mode=${mode}${searchPath(query)}`;
 
 const toSplitMode = (mode: string | undefined): SplitMode => {
     if (mode === "view-mode") return "preview";
@@ -23,19 +28,22 @@ const toViewMode = (mode: SplitMode): NotesViewMode => {
     return "edit-mode";
 };
 
-/** URL-backed notebook, note, and editor mode state for the notes workspace. */
+/** URL-backed notebook, note, editor mode, and search state for the notes workspace. */
 export function useNotesRoute() {
-    const [params] = useSearchParams<{ notebook?: string; note?: string; mode?: string }>();
+    const [params, setParams] = useSearchParams<{ notebook?: string; note?: string; mode?: string; search?: string }>();
     const navigate = useNavigate();
 
     const selectedProject = () => params.notebook ?? "";
     const selectedNote = () => params.note ?? "";
     const splitMode = () => toSplitMode(params.mode);
+    const searchQuery = () => params.search ?? "";
+    const setSearchQuery = (query: string) => setParams({ search: query || undefined }, { replace: true });
 
-    const showRoot = (replace = false) => navigate("/", { replace });
-    const pickProject = (projectId: string, replace = false) => navigate(notesNotebookPath(projectId), { replace });
+    const showRoot = (replace = false) => navigate(notesRootPath(params.search), { replace });
+    const pickProject = (projectId: string, replace = false) =>
+        navigate(notesNotebookPath(projectId, params.search), { replace });
     const selectNote = (projectId: string, noteId: string, mode: NotesViewMode = "edit-mode", replace = false) =>
-        navigate(notesNotePath(projectId, noteId, mode), { replace });
+        navigate(notesNotePath(projectId, noteId, mode, params.search), { replace });
     const pickNote = (noteId: string) => {
         const projectId = selectedProject();
         if (projectId) selectNote(projectId, noteId);
@@ -50,12 +58,12 @@ export function useNotesRoute() {
         const projectId = selectedProject();
         if (!projectId) return null;
         const project = projects.find((item) => item.id === projectId);
-        if (!project) return "/";
+        if (!project) return notesRootPath(params.search);
 
         const noteId = selectedNote();
         if (!noteId) return null;
-        if (!project.notes.some((note) => note.id === noteId)) return notesNotebookPath(projectId);
-        if (!VIEW_MODES.has(params.mode as NotesViewMode)) return notesNotePath(projectId, noteId);
+        if (!project.notes.some((note) => note.id === noteId)) return notesNotebookPath(projectId, params.search);
+        if (!VIEW_MODES.has(params.mode as NotesViewMode)) return notesNotePath(projectId, noteId, "edit-mode", params.search);
         return null;
     };
 
@@ -65,6 +73,8 @@ export function useNotesRoute() {
         selectedProject,
         selectedNote,
         splitMode,
+        searchQuery,
+        setSearchQuery,
         showRoot,
         pickProject,
         pickNote,

@@ -33,6 +33,8 @@ export function useNotesWorkspace() {
     const search = useNotesSearch({
         projects: store.projects,
         selectNote: route.selectNote,
+        query: route.searchQuery,
+        setQuery: route.setSearchQuery,
     });
 
     const deletion = useNoteDeletion({
