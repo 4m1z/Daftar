@@ -1,4 +1,5 @@
-import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
+import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
+import { createMemo } from "solid-js";
 
 import type { Project, SplitMode } from "~/lib/types/notes";
 
@@ -25,6 +26,15 @@ const decodePathSegment = (value: string | undefined) => {
     }
 };
 
+const parseNotesPath = (pathname: string) => {
+    const match = /^\/notes\/([^/]+)(?:\/note\/([^/]+)\/([^/]+))?\/?$/.exec(pathname);
+    return {
+        notebookId: match?.[1],
+        noteId: match?.[2],
+        mode: match?.[3],
+    };
+};
+
 const toSplitMode = (mode: string | undefined): SplitMode => {
     if (mode === "view-mode") return "preview";
     if (mode === "both") return "split";
@@ -39,13 +49,16 @@ const toViewMode = (mode: SplitMode): NotesViewMode => {
 
 /** URL-backed notebook, note, editor mode, and search state for the notes workspace. */
 export function useNotesRoute() {
-    const params = useParams<{ notebookId?: string; noteId?: string; mode?: string }>();
+    const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams<{ search?: string }>();
     const navigate = useNavigate();
+    // Descendant route params resolve incrementally while lazy route modules load.
+    // The pathname changes atomically, so workspace selection never clears mid-navigation.
+    const params = createMemo(() => parseNotesPath(location.pathname));
 
-    const selectedProject = () => decodePathSegment(params.notebookId);
-    const selectedNote = () => decodePathSegment(params.noteId);
-    const splitMode = () => toSplitMode(params.mode);
+    const selectedProject = () => decodePathSegment(params().notebookId);
+    const selectedNote = () => decodePathSegment(params().noteId);
+    const splitMode = () => toSplitMode(params().mode);
     const searchQuery = () => searchParams.search ?? "";
     const setSearchQuery = (query: string) => setSearchParams({ search: query || undefined }, { replace: true });
 
@@ -73,7 +86,7 @@ export function useNotesRoute() {
         const noteId = selectedNote();
         if (!noteId) return null;
         if (!project.notes.some((note) => note.id === noteId)) return notesNotebookPath(projectId, searchParams.search);
-        if (!VIEW_MODES.has(params.mode as NotesViewMode)) {
+        if (!VIEW_MODES.has(params().mode as NotesViewMode)) {
             return notesNotePath(projectId, noteId, "edit-mode", searchParams.search);
         }
         return null;

@@ -1,12 +1,12 @@
-import { createEffect, createSignal, lazy, onCleanup, Show, type Accessor } from "solid-js";
+import { lazy, Show, type Accessor } from "solid-js";
 
+import { useDebouncedValue } from "~/lib/hooks/use-debounced-value";
 import type { NoteItem } from "~/lib/types/notes";
 import type { Theme } from "~/utils/theme";
 
 const Markdown = lazy(() => import("~/components/editor/markdown").then((module) => ({ default: module.Markdown })));
 const NoteEditor = lazy(() => import("~/components/editor/note-editor").then((module) => ({ default: module.NoteEditor })));
 
-/** CodeMirror editor bound to the active note. Remounts when the note changes. */
 export function NoteEditorPanel(props: {
     note: Accessor<NoteItem | null>;
     onChange: (value: string) => void;
@@ -27,29 +27,16 @@ export function NoteEditorPanel(props: {
     );
 }
 
-/** Rendered markdown preview of the active note. */
 export function NotePreviewPanel(props: {
     note: Accessor<NoteItem | null>;
     onChange: (value: string) => void;
     mobile?: boolean;
 }) {
-    const [source, setSource] = createSignal(props.note()?.content ?? "");
-    let noteId = props.note()?.id;
-    let timeout: number | undefined;
-
-    createEffect(
-        () => ({ id: props.note()?.id, content: props.note()?.content ?? "" }),
-        (note) => {
-            window.clearTimeout(timeout);
-            if (note.id !== noteId) {
-                noteId = note.id;
-                setSource(note.content);
-                return;
-            }
-            timeout = window.setTimeout(() => setSource(note.content), 250);
-        },
+    const source = useDebouncedValue(
+        () => props.note()?.content ?? "",
+        250,
+        { key: () => props.note()?.id },
     );
-    onCleanup(() => window.clearTimeout(timeout));
 
     return (
         <Show

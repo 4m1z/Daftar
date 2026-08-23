@@ -1,4 +1,4 @@
-import { For, Show } from "solid-js";
+import { For, Loading, Show, type ParentProps } from "solid-js";
 
 import {
     CompressIcon,
@@ -32,8 +32,7 @@ function SplitModeIcon(props: { mode: SplitMode }) {
     );
 }
 
-/** Shared editor column: title bar, view-mode controls, and responsive edit/preview panes. */
-export function NoteEditorPane(props: { workspace: NotesWorkspace; layout: DeviceLayout }) {
+export function NoteLayout(props: ParentProps<{ workspace: NotesWorkspace; layout: DeviceLayout }>) {
     const ws = props.workspace;
     return (
         <div
@@ -44,7 +43,10 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace; layout: Devic
             <Show
                 when={ws.activeNote()}
                 fallback={
-                    <div class="flex min-h-0 flex-1 flex-col items-center justify-center gap-4">
+                    <div
+                        class={`flex min-h-0 flex-1 flex-col items-center
+                            justify-center gap-4`}
+                    >
                         <NoteIcon />
                         <p class="text-[13px]" style={{ color: "var(--db-text3)" }}>
                             Select a note or create a new one
@@ -52,7 +54,8 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace; layout: Devic
                         <button
                             type="button"
                             onClick={ws.activeProject() ? ws.addNote : ws.addProject}
-                            class="flex items-center gap-2 rounded px-4 py-2 text-[13px] transition-colors"
+                            class={`flex items-center gap-2 rounded px-4 py-2
+                                text-[13px] transition-colors`}
                             style={{ background: "var(--db-surface)", color: "var(--db-text)" }}
                         >
                             <SmallPlusIcon />
@@ -62,7 +65,8 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace; layout: Devic
                 }
             >
                 <div
-                    class={`flex h-11 shrink-0 items-center justify-between border-b ${props.layout === "mobile" ? "px-3" : "px-4"}`}
+                    class={`flex h-11 shrink-0 items-center justify-between border-b
+                        ${props.layout === "mobile" ? "px-3" : "px-4"}`}
                     style={{ "border-color": "var(--db-border)" }}
                 >
                     <input
@@ -113,66 +117,119 @@ export function NoteEditorPane(props: { workspace: NotesWorkspace; layout: Devic
                     </div>
                 </div>
 
-                <div class={`flex min-h-0 flex-1 overflow-hidden ${props.layout === "mobile" ? "flex-col" : "flex-row"}`}>
-                    <Show when={ws.splitMode() === "edit"}>
-                        <div class="notes-editor min-h-0 flex-1 overflow-hidden">
-                            <NoteEditorPanel
-                                note={ws.activeNote}
-                                onChange={(value) => ws.patchNote({ content: value })}
-                                theme={ws.theme}
-                                vimMode={ws.vimMode}
+                <div
+                    class={`flex min-h-0 flex-1 overflow-hidden
+                        ${props.layout === "mobile" ? "flex-col" : "flex-row"}`}
+                >
+                    <Loading
+                        fallback={
+                            <div
+                                class="min-h-0 flex-1 animate-pulse bg-[var(--db-surface2)]"
+                                aria-label="Loading note"
                             />
-                        </div>
-                    </Show>
-                    <Show when={ws.splitMode() === "preview"}>
-                        <div class="min-h-0 w-full flex-1 overflow-auto">
-                            <NotePreviewPanel
-                                note={ws.activeNote}
-                                onChange={(content) => ws.patchNote({ content })}
-                                mobile={props.layout === "mobile"}
-                            />
-                        </div>
-                    </Show>
-                    <Show when={ws.splitMode() === "split"}>
-                        <div
-                            class={`notes-editor min-h-0 shrink-0 overflow-hidden ${
-                                props.layout === "mobile"
-                                    ? "h-1/2 w-full border-b"
-                                    : "h-full w-[var(--split-pct)]"
-                            }`}
-                            style={{ "--split-pct": `${ws.splitPct()}%`, "border-color": "var(--db-border)" }}
-                        >
-                            <NoteEditorPanel
-                                note={ws.activeNote}
-                                onChange={(value) => ws.patchNote({ content: value })}
-                                theme={ws.theme}
-                                vimMode={ws.vimMode}
-                            />
-                        </div>
-                        <Show when={props.layout === "desktop"}>
-                            <button
-                                type="button"
-                                onMouseDown={ws.onDividerMouseDown}
-                                onKeyDown={(event) => {
-                                    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-                                    event.preventDefault();
-                                    ws.nudgeSplit(event.key === "ArrowRight" ? 5 : -5);
-                                }}
-                                aria-label="Resize editor and preview panes"
-                                class="relative z-10 w-px shrink-0 cursor-col-resize bg-[var(--db-border)] transition-colors before:absolute before:-inset-x-2 before:inset-y-0 hover:bg-[var(--db-accent)]"
-                                title="Drag to resize"
-                            />
-                        </Show>
-                        <div class="min-h-0 min-w-0 flex-1 overflow-auto">
-                            <NotePreviewPanel
-                                note={ws.activeNote}
-                                onChange={(content) => ws.patchNote({ content })}
-                                mobile={props.layout === "mobile"}
-                            />
-                        </div>
-                    </Show>
+                        }
+                    >
+                        {props.children}
+                    </Loading>
                 </div>
             </Show>
         </div>
+    );
+}
+
+export function EmptyNotePane(props: { workspace: NotesWorkspace }) {
+    const ws = props.workspace;
+    return (
+        <div
+            class={`flex min-h-0 min-w-0 flex-1 flex-col
+                items-center justify-center gap-4`}
+        >
+            <NoteIcon />
+            <p class="text-[13px]" style={{ color: "var(--db-text3)" }}>
+                Select a note or create a new one
+            </p>
+            <button
+                type="button"
+                onClick={ws.activeProject() ? ws.addNote : ws.addProject}
+                class={`flex items-center gap-2 rounded px-4 py-2
+                    text-[13px] transition-colors`}
+                style={{ background: "var(--db-surface)", color: "var(--db-text)" }}
+            >
+                <SmallPlusIcon />
+                {ws.activeProject() ? "New note" : "New notebook"}
+            </button>
+        </div>
+    );
+}
+
+export function NoteEditMode(props: { workspace: NotesWorkspace }) {
+    const ws = props.workspace;
+    return (
+        <div class="notes-editor min-h-0 flex-1 overflow-hidden">
+            <NoteEditorPanel
+                note={ws.activeNote}
+                onChange={(value) => ws.patchNote({ content: value })}
+                theme={ws.theme}
+                vimMode={ws.vimMode}
+            />
+        </div>
+    );
+}
+
+export function NoteViewMode(props: { workspace: NotesWorkspace; layout: DeviceLayout }) {
+    const ws = props.workspace;
+    return (
+        <div class="min-h-0 w-full flex-1 overflow-auto">
+            <NotePreviewPanel
+                note={ws.activeNote}
+                onChange={(content) => ws.patchNote({ content })}
+                mobile={props.layout === "mobile"}
+            />
+        </div>
+    );
+}
+
+export function NoteSplitMode(props: { workspace: NotesWorkspace; layout: DeviceLayout }) {
+    const ws = props.workspace;
+    return (
+        <>
+            <div
+                class={`notes-editor min-h-0 shrink-0 overflow-hidden ${
+                    props.layout === "mobile" ? "h-1/2 w-full border-b" : "h-full w-[var(--split-pct)]"
+                }`}
+                style={{ "--split-pct": `${ws.splitPct()}%`, "border-color": "var(--db-border)" }}
+            >
+                <NoteEditorPanel
+                    note={ws.activeNote}
+                    onChange={(value) => ws.patchNote({ content: value })}
+                    theme={ws.theme}
+                    vimMode={ws.vimMode}
+                />
+            </div>
+            <Show when={props.layout === "desktop"}>
+                <button
+                    type="button"
+                    onMouseDown={ws.onDividerMouseDown}
+                    onKeyDown={(event) => {
+                        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+                        event.preventDefault();
+                        ws.nudgeSplit(event.key === "ArrowRight" ? 5 : -5);
+                    }}
+                    aria-label="Resize editor and preview panes"
+                    title="Drag to resize"
+                    class={`relative z-10 w-px shrink-0 cursor-col-resize
+                        bg-[var(--db-border)] transition-colors
+                        before:absolute before:-inset-x-2 before:inset-y-0
+                        hover:bg-[var(--db-accent)]`}
+                />
+            </Show>
+            <div class="min-h-0 min-w-0 flex-1 overflow-auto">
+                <NotePreviewPanel
+                    note={ws.activeNote}
+                    onChange={(content) => ws.patchNote({ content })}
+                    mobile={props.layout === "mobile"}
+                />
+            </div>
+        </>
     );
 }

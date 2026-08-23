@@ -2,14 +2,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const router = vi.hoisted(() => ({
     navigate: vi.fn(),
-    params: {} as { notebookId?: string; noteId?: string; mode?: string },
+    location: { pathname: "/" },
     searchParams: {} as { search?: string },
     setSearchParams: vi.fn(),
 }));
 
 vi.mock("@solidjs/router", () => ({
     useNavigate: () => router.navigate,
-    useParams: () => router.params,
+    useLocation: () => router.location,
     useSearchParams: () => [router.searchParams, router.setSearchParams],
 }));
 
@@ -18,7 +18,7 @@ import { notesNotebookPath, notesNotePath, useNotesRoute } from "./use-notes-rou
 beforeEach(() => {
     router.navigate.mockReset();
     router.setSearchParams.mockReset();
-    router.params = {};
+    router.location.pathname = "/";
     router.searchParams = {};
 });
 
@@ -40,7 +40,7 @@ describe("notes routes", () => {
     });
 
     it("reads and decodes notebook and note path parameters", () => {
-        router.params = { notebookId: "work%20notes", noteId: "note%2F1", mode: "view-mode" };
+        router.location.pathname = "/notes/work%20notes/note/note%2F1/view-mode";
         const route = useNotesRoute();
 
         expect(route.selectedProject()).toBe("work notes");
@@ -49,7 +49,7 @@ describe("notes routes", () => {
     });
 
     it("preserves search when navigating to another note", () => {
-        router.params = { notebookId: "p1", noteId: "n1", mode: "edit-mode" };
+        router.location.pathname = "/notes/p1/note/n1/edit-mode";
         router.searchParams = { search: "routing" };
         const route = useNotesRoute();
 
@@ -78,14 +78,14 @@ describe("notes routes", () => {
             notes: [{ id: "n1", title: "Note", content: "", updatedAt: "2026-08-22T00:00:00.000Z" }],
         }];
 
-        router.params = { notebookId: "missing" };
+        router.location.pathname = "/notes/missing";
         router.searchParams = { search: "routing" };
         expect(useNotesRoute().canonicalPath(projects)).toBe("/?search=routing");
 
-        router.params = { notebookId: "p1", noteId: "missing", mode: "edit-mode" };
+        router.location.pathname = "/notes/p1/note/missing/edit-mode";
         expect(useNotesRoute().canonicalPath(projects)).toBe("/notes/p1?search=routing");
 
-        router.params = { notebookId: "p1", noteId: "n1", mode: "invalid" };
+        router.location.pathname = "/notes/p1/note/n1/invalid";
         expect(useNotesRoute().canonicalPath(projects))
             .toBe("/notes/p1/note/n1/edit-mode?search=routing");
     });
