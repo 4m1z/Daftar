@@ -113,9 +113,6 @@ export function useNotesStore(route: NotesRoute) {
             notes: [{ id: noteId, title: "First note", content: "", updatedAt: new Date().toISOString() }],
         };
         setProjects((current) => [...current, project]);
-        markProjectSaved(serializeProject(project));
-        markNoteSaved(serializeNote(project.notes[0]));
-        route.selectNote(id, noteId);
         submit({ intent: "createProject", projectId: id, noteId, name: project.name, color: project.color });
     };
 
@@ -139,8 +136,6 @@ export function useNotesStore(route: NotesRoute) {
         setProjects((current) =>
             current.map((item) => (item.id === selectedProject() ? { ...item, notes: [note, ...item.notes] } : item)),
         );
-        markNoteSaved(serializeNote(note));
-        route.selectNote(selectedProject(), noteId);
         submit({ intent: "createNote", projectId: selectedProject(), noteId });
     };
 
