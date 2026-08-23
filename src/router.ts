@@ -1,12 +1,36 @@
-// The router instance, in its own module so both graphs share one source of
-// truth: src/App.tsx renders it; src/server-config.ts hands it to the
-// single-flight data collector so mutation responses carry refreshed route
-// data. Routes come from the file system (src/routes, scanned by the
-// fileRoutes plugin in vite.config.ts).
-import { pageRoutes } from "virtual:file-routes";
 import { createRouter } from "@solidjs/router";
-import { fileRoutes } from "@solidjs/router/fs";
 
-export const Router = createRouter({ routes: fileRoutes(pageRoutes) });
+import NotesIndexRoute from "~/routes";
+import NotesLayoutRoute from "~/routes/layout";
+import NoteLayoutRoute from "~/routes/note-layout";
+import NoteModeRoute from "~/routes/note-mode";
+import NotebookIndexRoute from "~/routes/notebook-index";
+import NotebookLayoutRoute from "~/routes/notebook-layout";
+
+export const Router = createRouter({
+    routes: [
+        {
+            path: "/",
+            component: NotesLayoutRoute,
+            children: [
+                { path: "/", component: NotesIndexRoute },
+                {
+                    path: "/notes/:notebookId",
+                    component: NotebookLayoutRoute,
+                    children: [
+                        { path: "/", component: NotebookIndexRoute },
+                        {
+                            path: "/note/:noteId",
+                            component: NoteLayoutRoute,
+                            children: [
+                                { path: "/:mode", component: NoteModeRoute },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+});
 
 export const { paths } = Router;

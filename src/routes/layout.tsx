@@ -54,7 +54,7 @@ function NotesWorkspaceLayout(props: ParentProps) {
     );
 }
 
-export default function NotesRouteLayout(props: ParentProps) {
+export default function NotesLayoutRoute(props: ParentProps) {
     return (
         <NotesRouteBoundary>
             <NotesWorkspaceProvider>

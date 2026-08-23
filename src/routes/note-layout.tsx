@@ -4,7 +4,7 @@ import { NoteLayout } from "~/components/editor/note-editor-pane";
 import { NotesRouteBoundary } from "~/components/feedback/notes-route-error";
 import { useNotesWorkspaceContext } from "~/lib/context/notes-workspace";
 
-export default function NoteRouteLayout(props: ParentProps) {
+export default function NoteLayoutRoute(props: ParentProps) {
     const { workspace, deviceLayout } = useNotesWorkspaceContext();
 
     return (

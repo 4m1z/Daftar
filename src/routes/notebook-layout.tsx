@@ -5,7 +5,7 @@ import { NotesRouteBoundary } from "~/components/feedback/notes-route-error";
 import { NotesListSidebar } from "~/components/layout/notes-list-sidebar";
 import { useNotesWorkspaceContext } from "~/lib/context/notes-workspace";
 
-export default function NotebookRouteLayout(props: ParentProps) {
+export default function NotebookLayoutRoute(props: ParentProps) {
     const { workspace, deviceLayout } = useNotesWorkspaceContext();
 
     return (
