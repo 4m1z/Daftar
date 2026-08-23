@@ -23,7 +23,8 @@ export function DeleteConfirmDialog(props: {
                     aria-labelledby="delete-confirm-title"
                 >
                     <div
-                        class="flex w-full max-w-[420px] flex-col gap-3 rounded-lg border p-5 shadow-2xl"
+                        class={`flex w-full max-w-[420px] flex-col gap-3
+                            rounded-lg border p-5 shadow-2xl`}
                         style={{ background: "var(--db-surface)", "border-color": "var(--db-border)" }}
                     >
                         <h2

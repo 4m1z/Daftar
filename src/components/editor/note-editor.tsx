@@ -289,7 +289,9 @@ export function NoteEditor(props: {
             <button
                 type="button"
                 onClick={() => openDrawing()}
-                class="absolute bottom-3 right-3 z-10 rounded border px-2.5 py-1.5 text-[11px] uppercase tracking-[0.18em] transition hover:brightness-110"
+                class={`absolute bottom-3 right-3 z-10 rounded border
+                    px-2.5 py-1.5 text-[11px] uppercase tracking-[0.18em]
+                    transition hover:brightness-110`}
                 style={{
                     "border-color": "var(--db-border, rgba(255,255,255,0.12))",
                     background: "var(--db-panel, rgba(24,24,27,0.9))",

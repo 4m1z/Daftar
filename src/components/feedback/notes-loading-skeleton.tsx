@@ -7,7 +7,8 @@ function SkeletonLine(props: { class: string }) {
 export function NotesLoadingSkeleton() {
     return (
         <main
-            class="notes-app db-page flex h-screen w-full overflow-hidden antialiased"
+            class={`notes-app db-page flex h-screen
+                w-full overflow-hidden antialiased`}
             aria-busy="true"
             aria-label="Loading notes"
         >

@@ -46,7 +46,15 @@ export function ThemeToggle() {
     const { theme, setTheme } = useTheme();
     const label = () => theme() === "dark" ? "Switch to light theme" : "Switch to dark theme";
     return (
-        <button type="button" onClick={() => setTheme(nextTheme(theme()))} title={label()} aria-label={label()} class="flex h-6 w-6 items-center justify-center rounded transition-colors hover:bg-black/10 dark:hover:bg-white/10" style={{ color: "var(--db-text2)" }}>
+        <button
+            type="button"
+            onClick={() => setTheme(nextTheme(theme()))}
+            title={label()}
+            aria-label={label()}
+            class={`flex h-6 w-6 items-center justify-center rounded
+                transition-colors hover:bg-black/10 dark:hover:bg-white/10`}
+            style={{ color: "var(--db-text2)" }}
+        >
             {theme() === "dark" ? <SunIcon class="h-3.5 w-3.5" /> : <MoonIcon class="h-3.5 w-3.5" />}
         </button>
     );

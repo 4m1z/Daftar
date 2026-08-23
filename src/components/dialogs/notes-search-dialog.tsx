@@ -36,7 +36,8 @@ export function NotesSearchDialog(props: {
     return (
         <Show when={props.open()}>
             <div
-                class="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[10vh]"
+                class={`fixed inset-0 z-50 flex items-start
+                    justify-center px-4 pt-[10vh]`}
                 style={{ background: "rgba(0, 0, 0, 0.45)" }}
                 onMouseDown={(event) => {
                     if (event.target === event.currentTarget) props.onClose();
@@ -46,7 +47,8 @@ export function NotesSearchDialog(props: {
                 aria-label="Search notes"
             >
                 <div
-                    class="flex w-full max-w-[640px] flex-col overflow-hidden rounded-lg border shadow-2xl"
+                    class={`flex w-full max-w-[640px] flex-col overflow-hidden
+                        rounded-lg border shadow-2xl`}
                     style={{ background: "var(--db-surface)", "border-color": "var(--db-border)" }}
                 >
                     <div
@@ -103,7 +105,8 @@ export function NotesSearchDialog(props: {
                                                 type="button"
                                                 onMouseEnter={() => props.setIndex(index())}
                                                 onClick={() => props.onSelect(result)}
-                                                class="flex w-full flex-col gap-0.5 border-b px-3 py-2 text-left transition-colors"
+                                                class={`flex w-full flex-col gap-0.5 border-b
+                                                    px-3 py-2 text-left transition-colors`}
                                                 style={{
                                                     background: active() ? "var(--db-surface2)" : "transparent",
                                                     "border-color": "var(--db-border)",
@@ -142,7 +145,8 @@ export function NotesSearchDialog(props: {
                         </Show>
                     </div>
                     <div
-                        class="flex items-center justify-between gap-2 border-t px-3 py-1.5 text-[10px]"
+                        class={`flex items-center justify-between gap-2 border-t
+                            px-3 py-1.5 text-[10px]`}
                         style={{ "border-color": "var(--db-border)", color: "var(--db-text3)" }}
                     >
                         <span>↑↓ navigate · ↵ open</span>

@@ -9,7 +9,8 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
     const ws = props.workspace;
     return (
         <div
-            class={`w-[320px] shrink-0 flex-col border-r 2xl:w-[340px] ${ws.focusMode() ? "hidden" : "flex"}`}
+            class={`w-[320px] shrink-0 flex-col border-r 2xl:w-[340px]
+                ${ws.focusMode() ? "hidden" : "flex"}`}
             style={{ background: "var(--db-surface)", "border-color": "var(--db-border)" }}
         >
             <div
@@ -36,7 +37,8 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
                     type="button"
                     onClick={ws.addNote}
                     title="New note"
-                    class="flex h-5 w-5 shrink-0 items-center justify-center rounded transition-colors"
+                    class={`flex h-5 w-5 shrink-0 items-center
+                        justify-center rounded transition-colors`}
                     style={{ color: "var(--db-text3)" }}
                 >
                     <SmallPlusIcon />
@@ -53,7 +55,8 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
                         <button
                             type="button"
                             onClick={ws.addNote}
-                            class="flex items-center gap-1 rounded px-2 py-1 text-[11px] transition-colors"
+                            class={`flex items-center gap-1 rounded px-2 py-1
+                                text-[11px] transition-colors`}
                             style={{ background: "var(--db-surface2)", color: "var(--db-text)" }}
                         >
                             <SmallPlusIcon />
@@ -75,7 +78,9 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
                                         ws.setSelectedNote(note.id);
                                     }
                                 }}
-                                class="group relative w-full border-b px-2.5 py-2 text-left transition-colors hover:bg-[var(--db-accent-soft)]"
+                                class={`group relative w-full border-b px-2.5 py-2
+                                    text-left transition-colors
+                                    hover:bg-[var(--db-accent-soft)]`}
                                 style={{
                                     background: active() ? "var(--db-accent-soft)" : "transparent",
                                     "border-color": "var(--db-border)",

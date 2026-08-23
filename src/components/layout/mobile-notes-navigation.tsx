@@ -10,7 +10,8 @@ export function MobileNotesNavigation(props: { workspace: NotesWorkspace }) {
     return (
         <div class="flex w-full shrink-0 flex-col overflow-hidden">
             <div
-                class="flex shrink-0 items-center gap-1.5 overflow-x-auto border-b px-3 py-2"
+                class={`flex shrink-0 items-center gap-1.5 overflow-x-auto
+                    border-b px-3 py-2`}
                 style={{ background: "var(--db-bg)", "border-color": "var(--db-border)" }}
             >
                 <For each={ws.projects()}>
@@ -19,7 +20,8 @@ export function MobileNotesNavigation(props: { workspace: NotesWorkspace }) {
                             type="button"
                             onClick={() => ws.pickProject(project.id)}
                             title={project.name}
-                            class="flex shrink-0 items-center gap-1.5 rounded px-2.5 py-1 text-[12px] transition-colors"
+                            class={`flex shrink-0 items-center gap-1.5 rounded
+                                px-2.5 py-1 text-[12px] transition-colors`}
                             style={{
                                 background: project.id === ws.selectedProject() ? "var(--db-surface2)" : "transparent",
                                 color: project.id === ws.selectedProject() ? "var(--db-text)" : "var(--db-text3)",
@@ -36,7 +38,8 @@ export function MobileNotesNavigation(props: { workspace: NotesWorkspace }) {
                 <button
                     type="button"
                     onClick={ws.addProject}
-                    class="flex shrink-0 items-center gap-1 rounded px-2.5 py-1 text-[12px]"
+                    class={`flex shrink-0 items-center gap-1 rounded
+                        px-2.5 py-1 text-[12px]`}
                     style={{ color: "var(--db-text3)" }}
                 >
                     <SmallPlusIcon /> New

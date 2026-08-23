@@ -196,7 +196,8 @@ export function ExcalidrawEditorModal(props: {
                         <button
                             type="button"
                             onClick={requestClose}
-                            class="rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-[var(--db-surface2)]"
+                            class={`rounded-md border px-3 py-1.5 text-xs font-semibold
+                                transition-colors hover:bg-[var(--db-surface2)]`}
                             style={{ "border-color": "var(--db-border)" }}
                         >
                             Cancel
@@ -205,7 +206,8 @@ export function ExcalidrawEditorModal(props: {
                             type="button"
                             onClick={() => props.onSave(toFencedBlock(scene))}
                             disabled={loading() || !!loadError()}
-                            class="rounded-md px-3 py-1.5 text-xs font-semibold text-white transition-opacity disabled:opacity-40"
+                            class={`rounded-md px-3 py-1.5 text-xs font-semibold
+                                text-white transition-opacity disabled:opacity-40`}
                             style={{ background: "var(--db-accent, #2563eb)" }}
                         >
                             Save to note
@@ -221,7 +223,10 @@ export function ExcalidrawEditorModal(props: {
                     </Show>
                     <Show when={loadError()}>
                         {(message) => (
-                            <div class="absolute inset-0 grid place-items-center bg-white p-6 text-center text-sm text-red-700">
+                            <div
+                                class={`absolute inset-0 grid place-items-center bg-white
+                                    p-6 text-center text-sm text-red-700`}
+                            >
                                 Could not load Excalidraw: {message()}
                             </div>
                         )}

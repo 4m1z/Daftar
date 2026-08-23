@@ -22,7 +22,10 @@ export default function Document(props: ParentProps) {
                 <script innerHTML="(function(){try{var d=document.documentElement;var m=document.cookie.match(/(?:^|; )notes-theme=(dark|light)/);var t=m?m[1]:(localStorage.getItem('dashboard-theme')==='dark'?'dark':'light');if(!m)document.cookie='notes-theme='+t+'; Path=/; Max-Age=31536000; SameSite=Lax';d.classList.remove('dark','dashboard-dark');if(t==='dark')d.classList.add('dark','dashboard-dark');d.setAttribute('data-theme',t==='dark'?'night':'light');d.setAttribute('data-dashboard-theme',t)}catch(e){}})();" />
                 <HydrationScript />
             </head>
-            <body class="min-h-screen overflow-x-hidden bg-[var(--app-bg)] font-sans text-[var(--app-text)] antialiased">
+            <body
+                class={`min-h-screen overflow-x-hidden bg-[var(--app-bg)]
+                    font-sans text-[var(--app-text)] antialiased`}
+            >
                 {props.children}
             </body>
         </html>

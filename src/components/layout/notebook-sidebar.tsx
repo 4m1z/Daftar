@@ -9,11 +9,13 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
     const ws = props.workspace;
     return (
         <div
-            class={`w-[200px] shrink-0 flex-col border-r 2xl:w-[220px] ${ws.focusMode() ? "hidden" : "flex"}`}
+            class={`w-[200px] shrink-0 flex-col border-r 2xl:w-[220px]
+                ${ws.focusMode() ? "hidden" : "flex"}`}
             style={{ background: "var(--db-bg)", "border-color": "var(--db-border)" }}
         >
             <div
-                class="flex h-auto shrink-0 flex-col gap-1.5 border-b px-2 py-1.5"
+                class={`flex h-auto shrink-0 flex-col gap-1.5
+                    border-b px-2 py-1.5`}
                 style={{ "border-color": "var(--db-border)" }}
             >
                 <div class="flex items-center justify-between">
@@ -39,7 +41,8 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                         const active = () => project.id === ws.selectedProject();
                         return (
                             <div
-                                class="group relative flex items-center gap-1.5 px-2 py-[5px] transition-colors"
+                                class={`group relative flex items-center gap-1.5
+                                    px-2 py-[5px] transition-colors`}
                                 style={{ background: active() ? "var(--db-accent-soft)" : "transparent" }}
                             >
                                 <Show when={active()}>
@@ -73,7 +76,9 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                                     onClick={() =>
                                         ws.setPendingDelete({ kind: "project", id: project.id, name: project.name })
                                     }
-                                    class="invisible flex h-4 w-4 shrink-0 items-center justify-center rounded transition-colors hover:text-red-400 group-hover:visible"
+                                    class={`invisible flex h-4 w-4 shrink-0 items-center
+                                        justify-center rounded transition-colors
+                                        hover:text-red-400 group-hover:visible`}
                                     style={{ color: "var(--db-text3)" }}
                                     title="Delete notebook"
                                 >
