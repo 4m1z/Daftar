@@ -75,3 +75,5 @@ CSS, loading skeleton, editor mode toggle.
 - `0ef91c6` feat: improve UX of notes & styles — synced (pane layout, editor pane, skeleton, tailwind).
 - `51431a4`, `f57c7df` — non-notes, intentionally skipped.
 - `c860cc8` fix: preview blinking on editor update — synced (diagram markup cache + no-clear re-render).
+- `2d64538` chore: improve ui — synced (notebook count pill + spacing).
+- `feb3903` chore: improve UI — synced (notebook row restyle, hover actions, touch visibility).
