@@ -23,7 +23,7 @@ product (no auth, no blog/calendar/projects, single-user local SQLite).
   flattened: upstream `src/routes/notes/<x>.tsx` → here `src/routes/<x>.tsx`
   (`layout`, `notebook-layout`, `notebook-index`, `note-layout`, `note-mode`, `index`).
 
-## Daftar simplifications (preserve on every port)
+## Daftar simplifications (preserve on every sync)
 
 - No auth/session: drop `getAdminUser()` / `userId` params. Model functions take plain ids
   (e.g. `renameNotebook(id, name)`), queries are unscoped.
@@ -44,8 +44,8 @@ When the user says "check amirahmadzadeh.com" (or "sync notes from the blog", et
 2. Filter to notes commits: touched paths under the notes list above, or messages mentioning
    note/notebook/editor/autosave/sidebar/workspace. Use `git show --stat <sha>` to confirm.
 3. Skip non-notes commits (blog/about/projects/public UI/post management). Known examples:
-   `51431a4` (public UI), `f57c7df` (post focus mode) — do not port.
-4. Port each notes commit here, adapted per "Daftar simplifications":
+   `51431a4` (public UI), `f57c7df` (post focus mode) — do not sync.
+4. Apply each notes commit here, adapted per "Daftar simplifications":
    - New files: copy then strip upstream-only concerns (auth, `/p/notes` links → `/notes/...` or `/`).
    - Prisma: add fields to Daftar's `Notebook`/`Note`, create a new migration
      (`prisma/migrations/<timestamp>_<name>/migration.sql`), run `bun run setup`.
@@ -59,7 +59,7 @@ When the user says "check amirahmadzadeh.com" (or "sync notes from the blog", et
 - `bun run test`, `bun run typecheck`
 - Never expose this app to an untrusted network (no auth).
 
-## Already synced (do not re-port)
+## Already synced (do not re-apply)
 
 Upstream notes work up to `0d4860c` is already in Daftar, including: config-based routing, selection
 preservation on create, tailwind tidy, nested notes UI, autosave preservation, deferred editor deps,
@@ -67,10 +67,11 @@ compressed/cached assets, dead-code removal, theme icons/context, server-side no
 components/lib organization, prisma note model renames, persisted note search in URL, responsive notes
 CSS, loading skeleton, editor mode toggle.
 
-## Pending upstream notes commits (ported 2026-09-09)
+## Pending upstream notes commits (synced 2026-09-09)
 
 - `c9cfaf0` fix: prevent Firefox notes hydration truncation — NOT APPLICABLE (static imports here).
-- `e86bb53` feat: add ability to archive notebook — ported (isArchived + filter tabs + archive/restore).
-- `5e66efe` fix: two-argument createEffect for notebook filter reveal — ported.
-- `0ef91c6` feat: improve UX of notes & styles — ported (pane layout, editor pane, skeleton, tailwind).
+- `e86bb53` feat: add ability to archive notebook — synced (isArchived + filter tabs + archive/restore).
+- `5e66efe` fix: two-argument createEffect for notebook filter reveal — synced.
+- `0ef91c6` feat: improve UX of notes & styles — synced (pane layout, editor pane, skeleton, tailwind).
 - `51431a4`, `f57c7df` — non-notes, intentionally skipped.
+- `c860cc8` fix: preview blinking on editor update — synced (diagram markup cache + no-clear re-render).

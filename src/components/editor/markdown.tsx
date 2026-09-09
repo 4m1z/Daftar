@@ -23,6 +23,7 @@ marked.use(
 );
 
 type DiagramTheme = "light" | "dark";
+type DiagramLanguage = "mermaid" | "excalidraw";
 type MermaidApi = (typeof import("mermaid"))["default"];
 
 let mermaidPromise: Promise<MermaidApi> | undefined;
@@ -31,6 +32,38 @@ let diagramId = 0;
 
 function getSiteTheme(): DiagramTheme {
     return document.documentElement.dataset.theme === "night" ? "dark" : "light";
+}
+
+// Bounded cache of rendered diagram markup, keyed by language + theme +
+// source. The preview re-parses the whole note on every (debounced) keystroke,
+// which destroys all diagram DOM nodes. Seeding freshly parsed blocks from
+// this cache keeps unchanged diagrams on screen instead of flashing an empty
+// box while the async renderer catches up.
+const diagramMarkupCache = new Map<string, string>();
+const MAX_DIAGRAM_CACHE_ENTRIES = 30;
+
+export function diagramCacheKey(language: DiagramLanguage, source: string, theme: DiagramTheme) {
+    return `${language}\n${theme}\n${source}`;
+}
+
+export function getCachedDiagramMarkup(language: DiagramLanguage, source: string, theme: DiagramTheme) {
+    return diagramMarkupCache.get(diagramCacheKey(language, source, theme));
+}
+
+export function setCachedDiagramMarkup(language: DiagramLanguage, source: string, theme: DiagramTheme, markup: string) {
+    const key = diagramCacheKey(language, source, theme);
+    // Re-insert to keep eviction order recency-based.
+    if (diagramMarkupCache.has(key)) diagramMarkupCache.delete(key);
+    diagramMarkupCache.set(key, markup);
+    while (diagramMarkupCache.size > MAX_DIAGRAM_CACHE_ENTRIES) {
+        const oldest = diagramMarkupCache.keys().next();
+        if (oldest.done) break;
+        diagramMarkupCache.delete(oldest.value);
+    }
+}
+
+export function clearDiagramMarkupCache() {
+    diagramMarkupCache.clear();
 }
 
 async function renderExcalidraw(source: string, siteTheme: DiagramTheme = getSiteTheme()) {
@@ -63,7 +96,11 @@ function showDiagramError(block: HTMLElement, source: string, label: string) {
     block.replaceChildren(message, pre);
 }
 
-function queueMermaidRender(block: HTMLElement, source: string) {
+function queueMermaidRender(block: HTMLElement, source: string, theme: DiagramTheme) {
+    // Seed from cache so the diagram stays visible (instead of an empty box)
+    // until the fresh render below swaps in seamlessly.
+    const cached = getCachedDiagramMarkup("mermaid", source, theme);
+    if (cached) block.innerHTML = cached;
     mermaidQueue = mermaidQueue.then(async () => {
         if (!block.isConnected) return;
         try {
@@ -71,7 +108,7 @@ function queueMermaidRender(block: HTMLElement, source: string) {
             mermaid.initialize({
                 startOnLoad: false,
                 securityLevel: "strict",
-                theme: getSiteTheme() === "dark" ? "dark" : "neutral",
+                theme: theme === "dark" ? "dark" : "neutral",
             });
             const { svg, bindFunctions } = await mermaid.render(`mermaid-diagram-${++diagramId}`, source);
             if (!block.isConnected) return;
@@ -81,6 +118,7 @@ function queueMermaidRender(block: HTMLElement, source: string) {
             renderedSvg?.setAttribute("role", "img");
             renderedSvg?.setAttribute("aria-label", "Mermaid diagram");
             bindFunctions?.(block);
+            setCachedDiagramMarkup("mermaid", source, theme, block.innerHTML);
         } catch {
             if (block.isConnected) showDiagramError(block, source, "Mermaid diagram");
         }
@@ -102,14 +140,22 @@ const excalidrawSources = new WeakMap<HTMLElement, { source: string; onEdit?: (s
 const mermaidSources = new WeakMap<HTMLElement, string>();
 const excalidrawRenderVersions = new WeakMap<HTMLElement, number>();
 
-async function renderExcalidrawBlock(block: HTMLElement, source: string, onEdit?: (source: string) => void) {
+async function renderExcalidrawBlock(
+    block: HTMLElement,
+    source: string,
+    onEdit?: (source: string) => void,
+    theme: DiagramTheme = getSiteTheme(),
+) {
     const version = (excalidrawRenderVersions.get(block) ?? 0) + 1;
     excalidrawRenderVersions.set(block, version);
-    block.replaceChildren();
+    // Deliberately no clearing here: the previous rendering (or a cached seed)
+    // stays visible until the fresh SVG is ready, so edits elsewhere in the
+    // note never flash an empty drawing box.
     try {
-        const svg = await renderExcalidraw(source);
+        const svg = await renderExcalidraw(source, theme);
         if (!block.isConnected || excalidrawRenderVersions.get(block) !== version) return;
-        block.append(svg);
+        setCachedDiagramMarkup("excalidraw", source, theme, svg.outerHTML);
+        block.replaceChildren(svg);
         addExcalidrawEditButton(block, source, onEdit);
     } catch {
         if (block.isConnected && excalidrawRenderVersions.get(block) === version) {
@@ -119,17 +165,29 @@ async function renderExcalidrawBlock(block: HTMLElement, source: string, onEdit?
 }
 
 function refreshDiagrams(container: HTMLDivElement) {
+    const theme = getSiteTheme();
     for (const block of container.querySelectorAll<HTMLElement>(".mermaid-block")) {
         const source = mermaidSources.get(block);
-        if (source) queueMermaidRender(block, source);
+        if (source) queueMermaidRender(block, source, theme);
     }
     for (const block of container.querySelectorAll<HTMLElement>(".excalidraw-block")) {
         const entry = excalidrawSources.get(block);
-        if (entry) void renderExcalidrawBlock(block, entry.source, entry.onEdit);
+        if (!entry) continue;
+        // Same-theme output is deterministic, so a cache hit swaps instantly
+        // with no async gap at all.
+        const cached = getCachedDiagramMarkup("excalidraw", entry.source, theme);
+        if (cached) {
+            excalidrawRenderVersions.set(block, (excalidrawRenderVersions.get(block) ?? 0) + 1);
+            block.innerHTML = cached;
+            addExcalidrawEditButton(block, entry.source, entry.onEdit);
+            continue;
+        }
+        void renderExcalidrawBlock(block, entry.source, entry.onEdit, theme);
     }
 }
 
 function enhanceDiagrams(container: HTMLDivElement, onEditExcalidraw?: (source: string) => void) {
+    const theme = getSiteTheme();
     for (const code of container.querySelectorAll<HTMLPreElement>("pre > code")) {
         const source = code.textContent || "";
         const language = [...code.classList]
@@ -144,11 +202,20 @@ function enhanceDiagrams(container: HTMLDivElement, onEditExcalidraw?: (source: 
         pre.replaceWith(block);
         if (language === "mermaid") {
             mermaidSources.set(block, source);
-            queueMermaidRender(block, source);
+            queueMermaidRender(block, source, theme);
             continue;
         }
         excalidrawSources.set(block, { source, onEdit: onEditExcalidraw });
-        void renderExcalidrawBlock(block, source, onEditExcalidraw);
+        // Excalidraw output is deterministic per (source, theme): a cache hit
+        // renders synchronously, so typing elsewhere in the note never
+        // re-renders (or flashes) an unchanged drawing.
+        const cached = getCachedDiagramMarkup("excalidraw", source, theme);
+        if (cached) {
+            block.innerHTML = cached;
+            addExcalidrawEditButton(block, source, onEditExcalidraw);
+            continue;
+        }
+        void renderExcalidrawBlock(block, source, onEditExcalidraw, theme);
     }
 }
 
@@ -156,6 +223,7 @@ export function Markdown(props: { source: string; class?: string; onChange?: (so
     let container: HTMLDivElement | undefined;
     let renderVersion = 0;
     let themeObserver: MutationObserver | null = null;
+    let lastTheme: DiagramTheme | null = null;
     const html = createMemo(() => marked.parse(props.source) as string);
     const [editingDrawing, setEditingDrawing] = createSignal<{ source: string; scene: ExcalidrawScene } | null>(null);
 
@@ -178,20 +246,26 @@ export function Markdown(props: { source: string; class?: string; onChange?: (so
         () => {
             const editable = !!props.onChange;
             const version = ++renderVersion;
+            // Observe once per component instance. The callback reads the
+            // current container/lastTheme through this closure, so later
+            // renders never leave it watching with a stale theme value.
+            if (!themeObserver && typeof MutationObserver !== "undefined") {
+                themeObserver = new MutationObserver(() => {
+                    if (!container) return;
+                    const theme = getSiteTheme();
+                    if (theme === lastTheme) return;
+                    lastTheme = theme;
+                    refreshDiagrams(container);
+                });
+                themeObserver.observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ["data-theme", "class"],
+                });
+            }
             queueMicrotask(() => {
                 if (version === renderVersion && container) {
+                    lastTheme = getSiteTheme();
                     enhanceDiagrams(container, editable ? editExcalidraw : undefined);
-                    let lastTheme = getSiteTheme();
-                    themeObserver ??= new MutationObserver(() => {
-                        const theme = getSiteTheme();
-                        if (theme === lastTheme || !container) return;
-                        lastTheme = theme;
-                        refreshDiagrams(container);
-                    });
-                    themeObserver.observe(document.documentElement, {
-                        attributes: true,
-                        attributeFilter: ["data-theme", "class"],
-                    });
                 }
             });
             return () => {
