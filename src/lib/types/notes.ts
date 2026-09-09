@@ -9,6 +9,7 @@ export type Project = {
     id: string;
     name: string;
     color: string;
+    isArchived: boolean;
     notes: NoteItem[];
 };
 

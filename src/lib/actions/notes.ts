@@ -7,6 +7,7 @@ import {
     deleteNote as deleteNoteRecord,
     listNotesProjects,
     renameNotebook,
+    setNotebookArchived,
     updateNote,
 } from "~/models/notes-workspace.server";
 import { DEFAULT_NOTEBOOK_COLOR } from "~/lib/constants/notes";
@@ -15,8 +16,9 @@ import type { NotesLoaderData } from "~/lib/types/notes";
 export const getNotesData = query(async () => {
     "use server";
     const projects = await listNotesProjects();
-    const selectedProjectId = projects[0]?.id ?? "";
-    const selectedNoteId = projects[0]?.notes[0]?.id ?? "";
+    const initialProject = projects.find((project) => !project.isArchived) ?? projects[0];
+    const selectedProjectId = initialProject?.id ?? "";
+    const selectedNoteId = initialProject?.notes[0]?.id ?? "";
     return {
         projects,
         selectedProjectId,
@@ -48,6 +50,13 @@ export const notesAction = action(async (formData: FormData) => {
         case "deleteProject":
             result = await deleteNotebook(String(formData.get("projectId") ?? ""));
             break;
+        case "archiveProject":
+        case "restoreProject": {
+            const projectId = String(formData.get("projectId") ?? "");
+            if (!projectId) throw new Response("Notebook id is required", { status: 400 });
+            result = await setNotebookArchived(projectId, intent === "archiveProject");
+            break;
+        }
         case "createNote":
             result = await createNote({
                 notebookId: String(formData.get("projectId") ?? ""),

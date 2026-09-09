@@ -61,6 +61,21 @@ describe("notes routes", () => {
         );
     });
 
+    it("treats re-selecting the open note as a no-op", () => {
+        router.location.pathname = "/notes/p1/note/n1/edit-mode";
+        const route = useNotesRoute();
+
+        route.pickNote("n1");
+
+        expect(router.navigate).not.toHaveBeenCalled();
+
+        route.pickNote("n2");
+
+        expect(router.navigate).toHaveBeenCalledWith("/notes/p1/note/n2/edit-mode", {
+            replace: false,
+        });
+    });
+
     it("replaces the current URL when the search query changes", () => {
         const route = useNotesRoute();
         route.setSearchQuery("solid");
@@ -75,6 +90,7 @@ describe("notes routes", () => {
             id: "p1",
             name: "Project",
             color: "1",
+            isArchived: false,
             notes: [{ id: "n1", title: "Note", content: "", updatedAt: "2026-08-22T00:00:00.000Z" }],
         }];
 
@@ -88,5 +104,33 @@ describe("notes routes", () => {
         router.location.pathname = "/notes/p1/note/n1/invalid";
         expect(useNotesRoute().canonicalPath(projects))
             .toBe("/notes/p1/note/n1/edit-mode?search=routing");
+    });
+
+    it("treats archived notebooks as valid deep-link targets", () => {
+        const projects = [
+            {
+                id: "p1",
+                name: "Active",
+                color: "1",
+                isArchived: false,
+                notes: [{ id: "n1", title: "Note", content: "", updatedAt: "2026-08-22T00:00:00.000Z" }],
+            },
+            {
+                id: "p2",
+                name: "Old project",
+                color: "2",
+                isArchived: true,
+                notes: [{ id: "n2", title: "Old note", content: "", updatedAt: "2026-08-22T00:00:00.000Z" }],
+            },
+        ];
+
+        router.location.pathname = "/notes/p2";
+        expect(useNotesRoute().canonicalPath(projects)).toBeNull();
+
+        router.location.pathname = "/notes/p2/note/n2/edit-mode";
+        expect(useNotesRoute().canonicalPath(projects)).toBeNull();
+
+        router.location.pathname = "/notes/p2/note/missing/edit-mode";
+        expect(useNotesRoute().canonicalPath(projects)).toBe("/notes/p2");
     });
 });

@@ -24,7 +24,7 @@ function note(overrides: Partial<NoteItem> = {}): NoteItem {
 }
 
 function project(overrides: Partial<Project> = {}): Project {
-    return { id: "p1", name: "Notebook", color: "#000", notes: [], ...overrides };
+    return { id: "p1", name: "Notebook", color: "#000", isArchived: false, notes: [], ...overrides };
 }
 
 describe("uid", () => {
@@ -186,6 +186,20 @@ describe("searchNotes", () => {
     it("uses 'Untitled' for empty note titles", () => {
         const withUntitled = [project({ notes: [note({ id: "x", title: "", content: "zzz body" })] })];
         expect(searchNotes(withUntitled, "zzz")[0].noteTitle).toBe("Untitled");
+    });
+
+    it("includes archived notebooks in results", () => {
+        const withArchived = [
+            ...projects,
+            project({
+                id: "p3",
+                name: "Retired project",
+                isArchived: true,
+                notes: [note({ id: "n9", title: "Legacy", content: "retired sketch" })],
+            }),
+        ];
+        const results = searchNotes(withArchived, "retired");
+        expect(results.some((result) => result.projectId === "p3")).toBe(true);
     });
 
     it("caps the number of results", () => {

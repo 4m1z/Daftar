@@ -6,3 +6,4 @@ data/
 *.db-journal
 prisma/*.db
 file-routes.d.ts
+backup-db/

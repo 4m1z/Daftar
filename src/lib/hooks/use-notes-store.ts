@@ -21,6 +21,9 @@ export function useNotesStore(route: NotesRoute) {
 
     const [projects, setProjects] = createSignal<Project[]>([]);
     const [noteOrderByProject, setNoteOrderByProject] = createSignal<Record<string, string[]>>({});
+    const [pendingArchive, setPendingArchive] = createSignal<Record<string, true>>({});
+    const [pendingCreate, setPendingCreate] = createSignal<Record<string, true>>({});
+    const [archiveError, setArchiveError] = createSignal<string | null>(null);
     const selectedProject = route.selectedProject;
     const selectedNote = route.selectedNote;
 
@@ -110,18 +113,69 @@ export function useNotesStore(route: NotesRoute) {
             id,
             name: "New notebook",
             color: nextColor(projects()),
+            isArchived: false,
             notes: [{ id: noteId, title: "First note", content: "", updatedAt: new Date().toISOString() }],
         };
         setProjects((current) => [...current, project]);
-        submit({ intent: "createProject", projectId: id, noteId, name: project.name, color: project.color });
+        setPendingCreate((current) => ({ ...current, [id]: true }));
+        void submit({
+            intent: "createProject",
+            projectId: id,
+            noteId,
+            name: project.name,
+            color: project.color,
+        }).finally(() =>
+            setPendingCreate((current) => {
+                if (!(id in current)) return current;
+                const next = { ...current };
+                delete next[id];
+                return next;
+            }),
+        );
     };
 
     const deleteProject = (id: string) => {
+        if (pendingArchive()[id]) return;
         const next = projects().filter((project) => project.id !== id);
         const deletingActive = selectedProject() === id;
         setProjects(next);
         if (deletingActive) route.showRoot();
         submit({ intent: "deleteProject", projectId: id });
+    };
+
+    const isProjectBusy = (id: string) => Boolean(pendingArchive()[id] ?? pendingCreate()[id]);
+
+    /**
+     * Archives or restores a notebook. Local status is patched only after the
+     * server confirms, using a map over the latest state so concurrent note
+     * edits are never overwritten. Selection and filtering are owned by the
+     * workspace hook, which reacts to the updated status.
+     */
+    const setProjectArchived = async (id: string, archived: boolean): Promise<boolean> => {
+        const current = projects().find((project) => project.id === id);
+        if (!current || current.isArchived === archived || pendingArchive()[id] || pendingCreate()[id]) return false;
+        setArchiveError(null);
+        setPendingArchive((pending) => ({ ...pending, [id]: true }));
+        const ok = await submit({
+            intent: archived ? "archiveProject" : "restoreProject",
+            projectId: id,
+        });
+        setPendingArchive((pending) => {
+            if (!(id in pending)) return pending;
+            const next = { ...pending };
+            delete next[id];
+            return next;
+        });
+        if (!ok) {
+            setArchiveError(
+                archived ? "Couldn’t archive this notebook. Try again." : "Couldn’t restore this notebook. Try again.",
+            );
+            return false;
+        }
+        setProjects((projects) =>
+            projects.map((project) => (project.id === id ? { ...project, isArchived: archived } : project)),
+        );
+        return true;
     };
 
     const renameProject = (id: string, name: string) => {
@@ -174,6 +228,7 @@ export function useNotesStore(route: NotesRoute) {
         projects,
         selectedProject,
         selectedNote,
+        showRoot: route.showRoot,
         setSelectedNote: route.pickNote,
         activeProject,
         activeNote,
@@ -195,6 +250,10 @@ export function useNotesStore(route: NotesRoute) {
         addProject,
         deleteProject,
         renameProject,
+        setProjectArchived,
+        isProjectBusy,
+        archiveError,
+        clearArchiveError: () => setArchiveError(null),
         addNote,
         deleteNote,
         patchNote,

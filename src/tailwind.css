@@ -219,6 +219,244 @@ body {
     color-scheme: dark;
 }
 
+/* ─── Notes workspace frame ────────────────────────────────────────────────
+ * Persistent three-pane layout: notebooks | notes list | editor. The notes
+ * pane is owned by layout.tsx (not the notebook route) so opening/closing a
+ * notebook animates width without remounting the editor. Compact layouts use
+ * one view at a time driven by data-depth; CSS owns first paint, while the
+ * viewport-aware context only feeds imperative focus/inert behavior.
+ * Motion: restrained Apple-style reveals, ease-out-expo curve, no scaling.
+ * ──────────────────────────────────────────────────────────────────────────── */
+.notes-frame {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+}
+@media (max-width: 1279px) {
+    /* Reserve the fixed bottom app navigation + safe area once. */
+    .notes-frame {
+        height: calc(100dvh - 6rem);
+    }
+}
+.notes-pane {
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+}
+.notes-pane-notebooks {
+    width: 200px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--db-border);
+    overflow: hidden;
+    transition:
+        width 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 160ms ease;
+}
+@media (min-width: 1536px) {
+    .notes-pane-notebooks {
+        width: 220px;
+    }
+}
+.notes-pane-notebooks > * {
+    width: 200px;
+    flex-shrink: 0;
+}
+@media (min-width: 1536px) {
+    .notes-pane-notebooks > * {
+        width: 220px;
+    }
+}
+.notes-pane-notes {
+    width: 320px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--db-border);
+    overflow: hidden;
+    transition:
+        width 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 160ms ease;
+}
+@media (min-width: 1536px) {
+    .notes-pane-notes {
+        width: 340px;
+    }
+}
+.notes-pane-notes > * {
+    width: 320px;
+    flex-shrink: 0;
+}
+@media (min-width: 1536px) {
+    .notes-pane-notes > * {
+        width: 340px;
+    }
+}
+.notes-frame[data-depth="0"] .notes-pane-notes {
+    width: 0;
+    opacity: 0;
+    border-right-color: transparent;
+}
+.notes-frame[data-focus="true"] .notes-pane-notebooks,
+.notes-frame[data-focus="true"] .notes-pane-notes {
+    width: 0;
+    opacity: 0;
+    border-right-color: transparent;
+}
+.notes-pane-editor {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Compact: one view at a time (Notebooks -> Notes -> Editor). */
+@media (max-width: 1023px) {
+    .notes-frame {
+        flex-direction: column;
+    }
+    .notes-pane-notebooks,
+    .notes-pane-notes,
+    .notes-pane-editor {
+        width: 100%;
+        flex: 1;
+        border-right: none;
+    }
+    .notes-pane-notebooks > *,
+    .notes-pane-notes > * {
+        width: 100%;
+    }
+    .notes-frame[data-depth="0"] .notes-pane-notes,
+    .notes-frame[data-depth="0"] .notes-pane-editor,
+    .notes-frame[data-depth="1"] .notes-pane-notebooks,
+    .notes-frame[data-depth="1"] .notes-pane-editor,
+    .notes-frame[data-depth="2"] .notes-pane-notebooks,
+    .notes-frame[data-depth="2"] .notes-pane-notes {
+        display: none;
+    }
+    .notes-frame[data-depth="0"] .notes-pane-notes,
+    .notes-frame[data-focus="true"] .notes-pane-notebooks,
+    .notes-frame[data-focus="true"] .notes-pane-notes {
+        width: 100%;
+        opacity: 1;
+    }
+}
+
+/* Back controls only make sense in the single-view flow. */
+.notes-compact-only {
+    display: none;
+}
+@media (max-width: 1023px) {
+    .notes-compact-only {
+        display: flex;
+    }
+}
+
+/* Motion system. */
+@keyframes notes-list-enter {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+.notes-list-enter {
+    animation: notes-list-enter 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes notes-editor-enter {
+    from {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+.notes-editor-enter {
+    animation: notes-editor-enter 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes notes-empty-enter {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.notes-empty-enter {
+    animation: notes-empty-enter 140ms ease both;
+}
+@keyframes notes-slide-forward {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+@keyframes notes-slide-back {
+    from {
+        opacity: 0;
+        transform: translateX(-24px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+@media (max-width: 1023px) {
+    .notes-frame[data-direction="forward"][data-depth="1"] [data-pane="notes"],
+    .notes-frame[data-direction="forward"][data-depth="2"] [data-pane="editor"] {
+        animation: notes-slide-forward 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .notes-frame[data-direction="back"][data-depth="0"] [data-pane="notebooks"],
+    .notes-frame[data-direction="back"][data-depth="1"] [data-pane="notes"] {
+        animation: notes-slide-back 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+}
+
+/* Selection feedback is immediate; keep hover/press snappy. */
+.notes-action,
+.notes-row-action {
+    transition-duration: 120ms;
+}
+.notes-frame :focus-visible {
+    outline: 2px solid var(--db-accent);
+    outline-offset: 2px;
+}
+
+/* Loading placeholders. */
+.notes-skeleton {
+    background-color: var(--db-border);
+}
+@media (prefers-reduced-motion: no-preference) {
+    .notes-skeleton {
+        animation: notes-pulse 1.6s ease-in-out infinite;
+    }
+}
+@keyframes notes-pulse {
+    0%,
+    100% {
+        opacity: 0.55;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .notes-frame,
+    .notes-frame *,
+    .notes-frame *::before,
+    .notes-frame *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
 /* ─── Markdown preview styles ───────────────────────────────────────────────
  * Shared across p.notes, p.manage, and public blog posts. Uses CSS variables
  * so it renders correctly in light and dark themes without

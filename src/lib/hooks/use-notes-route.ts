@@ -69,7 +69,11 @@ export function useNotesRoute() {
         navigate(notesNotePath(projectId, noteId, mode, searchParams.search), { replace });
     const pickNote = (noteId: string) => {
         const projectId = selectedProject();
-        if (projectId) selectNote(projectId, noteId);
+        if (!projectId) return;
+        // Clicking the already-open note is a no-op: it must not reset the
+        // editor mode, restart the reveal, or disturb the cursor.
+        if (selectedNote() === noteId) return;
+        selectNote(projectId, noteId);
     };
     const setSplitMode = (mode: SplitMode) => {
         const projectId = selectedProject();

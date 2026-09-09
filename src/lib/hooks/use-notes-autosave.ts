@@ -48,16 +48,22 @@ export function useNotesAutosave(store: NotesStore) {
             });
     };
 
-    // Debounced autosave for note edits.
+    // Debounced autosave for note edits. Pending edits are preserved across
+    // in-flight saves so rapid navigation never drops the latest content:
+    // switching notes flushes the previous note immediately, while staying on
+    // the same note keeps the pending payload until the save gate reopens.
     createEffect(
         () => ({ payload: store.notePayload(), note: store.activeNote(), saving: store.isSaving() }),
         ({ payload, note, saving }) => {
             if (pendingNote && pendingNote.note.id !== note?.id) savePendingNote();
             window.clearTimeout(noteTimeout);
             noteTimeout = undefined;
-            pendingNote = undefined;
-            if (!store.hasLoaded() || !note || payload === store.getSavedNote() || saving) return;
+            if (!store.hasLoaded() || !note || payload === store.getSavedNote()) {
+                pendingNote = undefined;
+                return;
+            }
             pendingNote = { payload, note };
+            if (saving) return;
             noteTimeout = window.setTimeout(savePendingNote, NOTE_SAVE_DELAY);
         },
     );
@@ -69,9 +75,12 @@ export function useNotesAutosave(store: NotesStore) {
             if (pendingProject && pendingProject.project.id !== project?.id) savePendingProject();
             window.clearTimeout(projectTimeout);
             projectTimeout = undefined;
-            pendingProject = undefined;
-            if (!store.hasLoaded() || !project || payload === store.getSavedProject() || saving) return;
+            if (!store.hasLoaded() || !project || payload === store.getSavedProject()) {
+                pendingProject = undefined;
+                return;
+            }
             pendingProject = { payload, project };
+            if (saving) return;
             projectTimeout = window.setTimeout(savePendingProject, PROJECT_SAVE_DELAY);
         },
     );

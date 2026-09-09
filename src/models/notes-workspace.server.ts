@@ -10,6 +10,7 @@ export async function listNotesProjects(): Promise<Project[]> {
             id: true,
             name: true,
             color: true,
+            isArchived: true,
             notes: {
                 orderBy: [{ sortOrder: "asc" }, { updatedAt: "asc" }],
                 select: { id: true, title: true, content: true, updatedAt: true },
@@ -21,6 +22,7 @@ export async function listNotesProjects(): Promise<Project[]> {
         id: notebook.id,
         name: notebook.name,
         color: notebook.color,
+        isArchived: notebook.isArchived,
         notes: notebook.notes.map((note) => ({ ...note, updatedAt: note.updatedAt.toISOString() })),
     }));
 }
@@ -54,6 +56,12 @@ export async function createNotebook({
 
 export async function renameNotebook(id: string, name: string) {
     const result = await prisma.notebook.updateMany({ where: { id }, data: { name } });
+    if (result.count === 0) throw new Response("Notebook not found", { status: 404 });
+    return { updatedAt: new Date() };
+}
+
+export async function setNotebookArchived(id: string, isArchived: boolean) {
+    const result = await prisma.notebook.updateMany({ where: { id }, data: { isArchived } });
     if (result.count === 0) throw new Response("Notebook not found", { status: 404 });
     return { updatedAt: new Date() };
 }

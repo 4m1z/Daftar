@@ -1,0 +1,1 @@
+ALTER TABLE "NotesNotebook" ADD COLUMN "isArchived" BOOLEAN NOT NULL DEFAULT false;

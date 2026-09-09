@@ -170,9 +170,79 @@ describe("useNotesAutosave", () => {
         expect(getSavedNote()).toBe(serializeNote(original));
     });
 
+    it("preserves dirty edits across an unrelated save such as archiving", async () => {
+        vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+        const { submit, setActiveNote, setIsSaving } = setup();
+        await flush();
+
+        setActiveNote(baseNote({ content: "edited before archive" }));
+        await flush();
+
+        // An archive/restore mutation flips the shared saving flag while the
+        // note edit is still debounced; the edit must not be lost.
+        setIsSaving(true);
+        await flush();
+        vi.advanceTimersByTime(NOTE_SAVE_DELAY);
+        await flush();
+        expect(submit).not.toHaveBeenCalled();
+
+        setIsSaving(false);
+        await flush();
+        vi.advanceTimersByTime(NOTE_SAVE_DELAY);
+        await flush();
+
+        expect(submit).toHaveBeenCalledTimes(1);
+        expect(submit).toHaveBeenCalledWith({
+            intent: "updateNote",
+            noteId: "n1",
+            title: "Title",
+            content: "edited before archive",
+        });
+    });
+
+    it("flushes the latest edit when navigating during an in-flight save", async () => {
+        vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+        const { submit, setActiveNote, setIsSaving, setSavedNote } = setup();
+        await flush();
+
+        setActiveNote(baseNote({ content: "first edit" }));
+        await flush();
+
+        // An unrelated mutation starts while the edit is still debounced.
+        setIsSaving(true);
+        await flush();
+
+        // A second keystroke lands while the save gate is closed.
+        setActiveNote(baseNote({ content: "latest edit" }));
+        await flush();
+
+        // Navigating away must persist the latest content to the old note,
+        // not drop it or attribute it to the incoming note.
+        const nextNote = baseNote({ id: "n2", content: "next" });
+        setSavedNote(serializeNote(nextNote));
+        setActiveNote(nextNote);
+        await flush();
+
+        expect(submit).toHaveBeenCalledTimes(1);
+        expect(submit).toHaveBeenCalledWith({
+            intent: "updateNote",
+            noteId: "n1",
+            title: "Title",
+            content: "latest edit",
+        });
+
+        setIsSaving(false);
+        await flush();
+        vi.advanceTimersByTime(NOTE_SAVE_DELAY);
+        await flush();
+
+        // The flushed edit must not fire twice and must not leak to note B.
+        expect(submit).toHaveBeenCalledTimes(1);
+    });
+
     it("saves a renamed notebook after its debounce", async () => {
         vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
-        const project: Project = { id: "p1", name: "Old", color: "#000", notes: [] };
+        const project: Project = { id: "p1", name: "Old", color: "#000", isArchived: false, notes: [] };
         const { submit, setActiveProject } = setup({ note: null, project });
         await flush();
 

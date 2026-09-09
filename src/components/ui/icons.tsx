@@ -53,6 +53,26 @@ export function TrashIcon(props: { class?: string }) {
     );
 }
 
+export function ArchiveIcon(props: { class?: string }) {
+    return (
+        <svg viewBox="0 0 16 16" fill="currentColor" class={props.class ?? "h-3 w-3"}>
+            <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M2.5 1.25h11a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-.75.75h-11a.75.75 0 0 1-.75-.75v-1a.75.75 0 0 1 .75-.75ZM1 3.75h14v7.5a2.75 2.75 0 0 1-2.75 2.75H3.75A2.75 2.75 0 0 1 1 11.25V3.75ZM5 7a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5H5.75A.75.75 0 0 1 5 7Z"
+            />
+        </svg>
+    );
+}
+
+export function RestoreIcon(props: { class?: string }) {
+    return (
+        <svg viewBox="0 0 16 16" fill="currentColor" class={props.class ?? "h-3 w-3"}>
+            <path d="M8 1l3 3H9.25v4.5h-2.5V4H5L8 1ZM2 9.75a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 .75.75v1.5a2.75 2.75 0 0 1-2.75 2.75h-6.5A2.75 2.75 0 0 1 2 11.25V9.75Z" />
+        </svg>
+    );
+}
+
 export function EditIcon(props: { class?: string }) {
     return (
         <svg viewBox="0 0 16 16" fill="currentColor" class={props.class ?? "h-3.5 w-3.5"}>

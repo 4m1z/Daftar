@@ -17,6 +17,7 @@ const projectsFixture: Project[] = [
         id: "p1",
         name: "Web Tech",
         color: "#111",
+        isArchived: false,
         notes: [
             { id: "n1", title: "Solid JS", content: "signals", updatedAt: "2024-01-01T00:00:00.000Z" },
             { id: "n2", title: "Routing", content: "routes", updatedAt: "2024-01-02T00:00:00.000Z" },
@@ -26,6 +27,7 @@ const projectsFixture: Project[] = [
         id: "p2",
         name: "Cooking",
         color: "#222",
+        isArchived: false,
         notes: [{ id: "n3", title: "Pasta", content: "boil", updatedAt: "2024-01-03T00:00:00.000Z" }],
     },
 ];
