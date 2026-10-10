@@ -7,3 +7,4 @@ data/
 prisma/*.db
 file-routes.d.ts
 backup-db/
+AGENTS.md
