@@ -44,7 +44,8 @@ export function useTheme() {
 
 export function ThemeToggle() {
     const { theme, setTheme } = useTheme();
-    const label = () => theme() === "dark" ? "Switch to light theme" : "Switch to dark theme";
+    const label = () =>
+        `Theme: ${theme() === "omablue" ? "Omablue" : theme()}. Switch to ${nextTheme(theme()) === "omablue" ? "Omablue" : nextTheme(theme())} theme`;
     return (
         <button
             type="button"
@@ -55,7 +56,13 @@ export function ThemeToggle() {
                 transition-colors hover:bg-black/10 dark:hover:bg-white/10`}
             style={{ color: "var(--db-text2)" }}
         >
-            {theme() === "dark" ? <SunIcon class="h-3.5 w-3.5" /> : <MoonIcon class="h-3.5 w-3.5" />}
+            {theme() === "omablue" ? (
+                <SunIcon class="h-3.5 w-3.5" />
+            ) : theme() === "dark" ? (
+                <span aria-hidden="true" class="h-3.5 w-3.5 rounded-full border-2 border-[#73b7ff] bg-[#012456]" />
+            ) : (
+                <MoonIcon class="h-3.5 w-3.5" />
+            )}
         </button>
     );
 }

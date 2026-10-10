@@ -131,6 +131,52 @@ body {
     --notebook-color-8: #91a9b8;
 }
 
+/* Omablue-inspired palette, activated by the dashboard-omablue class. */
+:root.dashboard-omablue {
+    --app-bg: #012456;
+    --app-surface: #011b40;
+    --app-surface-raised: #0a326b;
+    --app-text: #fff;
+    --app-text-muted: #a8bdd2;
+    --app-text-dim: #7ba2c7;
+    --app-border: #2a5a8f;
+    --app-border-strong: #7ba2c7;
+    --app-accent: #73b7ff;
+    --app-accent-strong: #a8d4ff;
+    --app-accent-soft: #2a5a8f;
+    --app-danger: #ff7b72;
+    --app-warning: #ffd166;
+    --app-success: #7ee787;
+    --app-shadow: 0 10px 26px rgb(0 19 45 / 40%);
+    --db-bg: #012456;
+    --db-surface: #011b40;
+    --db-surface2: #0a326b;
+    --db-panel: #00132d;
+    --db-border: rgb(123 162 199 / 25%);
+    --db-border2: rgb(123 162 199 / 55%);
+    --db-text: #fff;
+    --db-text2: #a8bdd2;
+    --db-text3: #7ba2c7;
+    --db-accent: #73b7ff;
+    --db-danger: #ff7b72;
+    --db-warning: #ffd166;
+    --db-success: #7ee787;
+    --db-shadow: 0 4px 12px rgb(0 19 45 / 30%);
+    --db-shadow2: 0 2px 10px rgb(0 19 45 / 45%);
+    --db-card-shadow: 0 1px 2px rgb(0 19 45 / 35%);
+    --db-accent-grad: #73b7ff;
+    --db-accent-soft: #2a5a8f;
+    --db-page-glow: none;
+    --notebook-color-1: #7ee787;
+    --notebook-color-2: #ffd166;
+    --notebook-color-3: #a8bdd2;
+    --notebook-color-4: #ffab70;
+    --notebook-color-5: #d6a8ff;
+    --notebook-color-6: #72e6e6;
+    --notebook-color-7: #ff7b72;
+    --notebook-color-8: #73b7ff;
+}
+
 /* ─── Dashboard surface helpers ─────────────────────────────────────────────
 * Utility classes consumed by dashboard pages so they don't hardcode colours.
 * The website never uses these classes.
@@ -201,6 +247,38 @@ body {
     --editor-type: hsl(329deg 86% 70%);
     --editor-function: hsl(187deg 92% 69%);
     --editor-link: hsl(173deg 80% 40%);
+}
+
+.dashboard-omablue .db-page {
+    --md-link: #73b7ff;
+    --md-heading: #fff;
+    --md-border: var(--db-border);
+    --md-border-strong: var(--db-border2);
+    --md-code-bg: #0a326b;
+    --md-code-fg: #dce9f5;
+    --md-block-bg: #00132d;
+    --md-block-fg: #dce9f5;
+    --md-block-border: #2a5a8f;
+    --md-quote-bar: #73b7ff;
+    --md-quote-bg: #011b40;
+    --md-quote-fg: #a8bdd2;
+    --md-table-head-bg: #0a326b;
+    --md-table-head-fg: #fff;
+    --md-table-row-alt: rgb(42 90 143 / 25%);
+    --md-hr: var(--db-border);
+    --editor-fg: #dce9f5;
+    --editor-comment: #7ba2c7;
+    --editor-keyword: #d6a8ff;
+    --editor-number: #ffd166;
+    --editor-string: #7ee787;
+    --editor-type: #ffab70;
+    --editor-function: #72e6e6;
+    --editor-link: #73b7ff;
+}
+
+.dashboard-omablue .db-page ::selection {
+    background: #2a5a8f;
+    color: #fff;
 }
 
 .db-text3 {

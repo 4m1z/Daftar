@@ -127,7 +127,7 @@ export function ExcalidrawEditorModal(props: {
                 reactRoot.render(
                     React.createElement(ExcalidrawModule.Excalidraw, {
                         initialData: startingScene as never,
-                        theme: props.theme,
+                        theme: props.theme === "light" ? "light" : "dark",
                         viewModeEnabled: false,
                         zenModeEnabled: false,
                         gridModeEnabled: false,

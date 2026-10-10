@@ -149,7 +149,7 @@ const lightTheme = EditorView.theme(
 
 function getThemeExtensions(theme: Theme) {
     const highlighting = syntaxHighlighting(editorHighlightStyle);
-    return theme === "dark" ? [highlighting, darkTheme] : [highlighting, lightTheme];
+    return theme !== "light" ? [highlighting, darkTheme] : [highlighting, lightTheme];
 }
 
 export function NoteEditor(props: {
