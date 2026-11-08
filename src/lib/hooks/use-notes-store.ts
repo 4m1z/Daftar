@@ -4,6 +4,7 @@ import { createEffect, createMemo, createSignal, untrack } from "solid-js";
 import { getNotesData, notesAction } from "~/lib/actions/notes";
 import type { NoteItem, Project } from "~/lib/types/notes";
 import { nextColor, orderNotes, serializeNote, serializeProject, sortNotesByUpdated, uid } from "~/lib/utils/notes";
+import { fillTemplatePlaceholders } from "~/lib/utils/templates";
 import type { NotesRoute } from "./use-notes-route";
 
 /**
@@ -193,6 +194,25 @@ export function useNotesStore(route: NotesRoute) {
         submit({ intent: "createNote", projectId: selectedProject(), noteId });
     };
 
+    const addNoteFromTemplate = (template: { name: string; content: string }) => {
+        if (!activeProject()) return null;
+        const noteId = uid();
+        const note: NoteItem = {
+            id: noteId,
+            title: template.name,
+            content: fillTemplatePlaceholders(template.content),
+            updatedAt: new Date().toISOString(),
+        };
+        setProjects((current) =>
+            current.map((project) =>
+                project.id === selectedProject() ? { ...project, notes: [note, ...project.notes] } : project,
+            ),
+        );
+        submit({ intent: "createNote", projectId: selectedProject(), noteId, title: note.title, content: note.content });
+        route.pickNote(noteId);
+        return noteId;
+    };
+
     const deleteNote = (noteId: string) => {
         const next = projects().map((project) =>
             project.id === selectedProject()
@@ -255,6 +275,7 @@ export function useNotesStore(route: NotesRoute) {
         archiveError,
         clearArchiveError: () => setArchiveError(null),
         addNote,
+        addNoteFromTemplate,
         deleteNote,
         patchNote,
     };

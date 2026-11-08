@@ -1,7 +1,7 @@
 import { For, Show } from "solid-js";
 
 import { ThemeToggle } from "~/components/ui/theme";
-import { ArchiveIcon, FolderIcon, RestoreIcon, SmallPlusIcon, TrashIcon } from "~/components/ui/icons";
+import { ArchiveIcon, EditIcon, FolderIcon, RestoreIcon, SmallPlusIcon, TemplateIcon, TrashIcon } from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 import { NotebookFilterTabs } from "./notebook-filter-tabs";
 
@@ -209,6 +209,53 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                         }}
                     </For>
                 </Show>
+            </div>
+
+            <div class="shrink-0 border-t px-2.5 py-2" style={{ "border-color": "var(--db-border)" }}>
+                <div class="flex min-h-8 items-center justify-between gap-1">
+                    <span class="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--db-text2)" }}>
+                        Templates
+                    </span>
+                    <div class="flex items-center gap-0.5">
+                        <button
+                            type="button"
+                            onClick={ws.openTemplatesPicker}
+                            title="New note from template"
+                            aria-label="New note from template"
+                            class="flex h-7 w-7 items-center justify-center rounded hover:bg-[var(--db-surface2)]"
+                            style={{ color: "var(--db-text3)" }}
+                        >
+                            <SmallPlusIcon class="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={ws.openTemplatesManager}
+                            title="Manage templates"
+                            aria-label="Manage templates"
+                            class="flex h-7 w-7 items-center justify-center rounded hover:bg-[var(--db-surface2)]"
+                            style={{ color: "var(--db-text3)" }}
+                        >
+                            <EditIcon class="h-3.5 w-3.5" />
+                        </button>
+                    </div>
+                </div>
+                <div class="flex max-h-32 flex-col gap-0.5 overflow-y-auto">
+                    <For each={ws.templates()}>
+                        {(template) => (
+                            <button
+                                type="button"
+                                onClick={() => ws.addNoteFromTemplate(template)}
+                                disabled={!ws.activeProject()}
+                                title={ws.activeProject() ? `Create note from ${template.name}` : "Open a notebook first"}
+                                class="flex items-center gap-2 rounded px-2 py-1.5 text-left text-[12px] hover:bg-[var(--db-surface)] disabled:opacity-40"
+                                style={{ color: "var(--db-text2)" }}
+                            >
+                                <TemplateIcon class="h-3.5 w-3.5 shrink-0" />
+                                <span class="truncate">{template.name}</span>
+                            </button>
+                        )}
+                    </For>
+                </div>
             </div>
 
             <div class="shrink-0 border-t px-3 py-2" style={{ "border-color": "var(--db-border)" }}>

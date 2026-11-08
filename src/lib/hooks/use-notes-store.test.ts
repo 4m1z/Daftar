@@ -83,6 +83,21 @@ describe("useNotesStore creation", () => {
         expect((mocks.runAction.mock.calls[0][0] as FormData).get("intent")).toBe("createNote");
         dispose();
     });
+
+    it("creates a note from a template with placeholders filled", async () => {
+        const { store, route, dispose } = setup();
+        await flushEffects();
+
+        const id = store.addNoteFromTemplate({ name: "Daily", content: "# {{date}}" });
+        await flushEffects();
+
+        expect(store.activeProject()?.notes[0]).toMatchObject({ title: "Daily", content: expect.stringMatching(/^# \d{4}-\d{2}-\d{2}$/) });
+        expect(route.pickNote).toHaveBeenCalledWith(id);
+        const form = mocks.runAction.mock.calls[0][0] as FormData;
+        expect(form.get("title")).toBe("Daily");
+        expect(form.get("content")).toBe(store.activeProject()?.notes[0].content);
+        dispose();
+    });
 });
 
 describe("useNotesStore archiving", () => {

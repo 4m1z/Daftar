@@ -9,3 +9,7 @@ export const PROJECT_SAVE_DELAY = 400;
 
 /** Maximum number of search results returned. */
 export const MAX_SEARCH_RESULTS = 50;
+
+export const TEMPLATE_CATEGORIES = ["Journaling", "Work", "Productivity", "Development", "Learning", "General"] as const;
+export type TemplateCategory = (typeof TEMPLATE_CATEGORIES)[number];
+export const DEFAULT_TEMPLATE_CATEGORY: TemplateCategory = "General";

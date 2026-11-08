@@ -3,6 +3,7 @@ import { createEffect, createMemo, createSignal, Show, type ParentProps } from "
 
 import { DeleteConfirmDialog } from "~/components/dialogs/delete-confirm-dialog";
 import { NotesSearchDialog } from "~/components/dialogs/notes-search-dialog";
+import { TemplatesDialog } from "~/components/dialogs/templates-dialog";
 import { NotesRouteBoundary } from "~/components/feedback/notes-route-error";
 import { NotebookSidebar } from "~/components/layout/notebook-sidebar";
 import { NotesListSidebar } from "~/components/layout/notes-list-sidebar";
@@ -67,6 +68,24 @@ function NotesWorkspaceLayout(props: ParentProps) {
                     moveIndex={ws.moveSearchIndex}
                     registerInput={ws.registerSearchInput}
                 />
+                <Show when={ws.templatesDialog()}>
+                    {(mode) => (
+                        <TemplatesDialog
+                            mode={mode()}
+                            templates={ws.templates()}
+                            activeNote={ws.activeNote()}
+                            onClose={ws.closeTemplatesDialog}
+                            onPick={(template) => {
+                                ws.addNoteFromTemplate(template);
+                                ws.closeTemplatesDialog();
+                            }}
+                            onCreate={ws.createTemplate}
+                            onUpdate={ws.updateTemplate}
+                            onDelete={ws.deleteTemplate}
+                            onDuplicate={ws.duplicateTemplate}
+                        />
+                    )}
+                </Show>
                 <main
                     class="notes-app db-page notes-frame"
                     data-depth={depth()}

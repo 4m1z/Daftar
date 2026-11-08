@@ -3,13 +3,15 @@ import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { languages } from "@codemirror/language-data";
 import { searchKeymap } from "@codemirror/search";
-import { Compartment, EditorSelection, EditorState } from "@codemirror/state";
+import { Compartment, EditorSelection, EditorState, Prec } from "@codemirror/state";
 import { drawSelection, EditorView, keymap, placeholder as cmPlaceholder } from "@codemirror/view";
 import { tags } from "@lezer/highlight";
 import { vim } from "@replit/codemirror-vim";
 import { createEffect, createSignal, Show, onSettled } from "solid-js";
 
 import { ExcalidrawEditorModal, type ExcalidrawScene } from "~/components/editor/excalidraw-editor-modal";
+import { getFilteredCommands, parseSlashQuery, type SlashCommand } from "~/components/editor/slash-commands";
+import { SlashCommandMenu } from "~/components/editor/slash-command-menu";
 import type { Theme } from "~/utils/theme";
 
 function findExcalidrawFenceAt(state: EditorState, position: number) {
@@ -187,13 +189,97 @@ export function NoteEditor(props: {
         return true;
     };
 
-    const openDrawingFromSlash = (editor: EditorView) => {
+    const [slashMenuOpen, setSlashMenuOpen] = createSignal(false);
+    const [slashQuery, setSlashQuery] = createSignal("");
+    const [slashPosition, setSlashPosition] = createSignal<{ top: number; left: number } | null>(null);
+    const [slashIndex, setSlashIndex] = createSignal(0);
+    let slashFrom = 0;
+    const filteredSlashCommands = () => getFilteredCommands(slashQuery());
+
+    const closeSlashMenu = () => {
+        setSlashMenuOpen(false);
+        setSlashQuery("");
+        setSlashPosition(null);
+        setSlashIndex(0);
+    };
+
+    const updateSlashPosition = (editor = view) => {
+        if (!editor || !slashMenuOpen()) return;
+        const coords = editor.coordsAtPos(slashFrom);
+        if (!coords) return closeSlashMenu();
+        setSlashPosition({
+            top: Math.max(8, Math.min(coords.bottom + 4, window.innerHeight - 340)),
+            left: Math.max(8, Math.min(coords.left - 8, window.innerWidth - 296)),
+        });
+    };
+
+    const syncSlashMenu = (state: EditorState, alreadyOpen: boolean) => {
+        const selection = state.selection.main;
+        const line = state.doc.lineAt(selection.from);
+        const parsed = selection.empty && selection.from === line.to
+            ? parseSlashQuery(line.text, selection.from - line.from)
+            : null;
+        if (!parsed || (!alreadyOpen && parsed.query !== "")) return closeSlashMenu();
+        slashFrom = line.from + parsed.from;
+        setSlashQuery(parsed.query);
+        setSlashMenuOpen(true);
+        updateSlashPosition();
+    };
+
+    const applySlashCommand = (editor: EditorView, command: SlashCommand) => {
         const selection = editor.state.selection.main;
-        if (!selection.empty || editor.state.doc.lineAt(selection.from).text.trim().toLowerCase() !== "/draw") {
+        const from = Math.min(slashFrom, selection.from);
+        closeSlashMenu();
+        if (command.action === "drawing") {
+            editor.dispatch({ changes: { from, to: selection.from, insert: "" }, selection: EditorSelection.cursor(from) });
+            openDrawing(editor);
+        } else {
+            editor.dispatch({
+                changes: { from, to: selection.from, insert: command.insert },
+                selection: EditorSelection.cursor(from + (command.cursor ?? command.insert.length)),
+            });
+        }
+        editor.focus();
+    };
+
+    const moveSlashSelection = (delta: number) => {
+        const count = filteredSlashCommands().length;
+        if (!slashMenuOpen()) return false;
+        if (count) setSlashIndex((index) => (index + delta + count) % count);
+        return true;
+    };
+
+    const runSlashCommand = (editor: EditorView) => {
+        if (!slashMenuOpen()) return false;
+        const command = filteredSlashCommands()[slashIndex()];
+        if (!command) {
+            closeSlashMenu();
             return false;
         }
-        return openDrawing(editor);
+        applySlashCommand(editor, command);
+        return true;
     };
+
+    const closeSlashMenuIfOpen = () => {
+        if (!slashMenuOpen()) return false;
+        closeSlashMenu();
+        return true;
+    };
+
+    const slashKeymap = Prec.highest(keymap.of([
+        { key: "ArrowDown", run: () => moveSlashSelection(1) },
+        { key: "ArrowUp", run: () => moveSlashSelection(-1) },
+        { key: "Enter", run: runSlashCommand },
+        { key: "Tab", run: runSlashCommand },
+        { key: "Escape", run: closeSlashMenuIfOpen },
+    ]));
+
+    createEffect(
+        () => slashQuery(),
+        () => {
+            setSlashIndex(0);
+        },
+    );
 
     const saveDrawing = (fencedBlock: string) => {
         const editor = view;
@@ -230,19 +316,34 @@ export function NoteEditor(props: {
                 markdown({ base: markdownLanguage, codeLanguages: languages }),
                 themeCompartment.of(getThemeExtensions(props.theme)),
                 cmPlaceholder(props.placeholder ?? "# Start writing…"),
-                keymap.of([
-                    { key: "Enter", run: openDrawingFromSlash },
-                    { key: "Tab", run: openDrawingFromSlash },
-                ]),
+                slashKeymap,
                 keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
                 EditorView.lineWrapping,
                 EditorView.updateListener.of((update) => {
-                    if (update.docChanged && !syncingValue) props.onChange(update.state.doc.toString());
+                    if (syncingValue) return;
+                    if (update.docChanged) props.onChange(update.state.doc.toString());
+                    if (!update.docChanged && !update.selectionSet) return;
+                    if (slashMenuOpen()) {
+                        syncSlashMenu(update.state, true);
+                        return;
+                    }
+                    if (!update.docChanged) return;
+                    const head = update.state.selection.main.head;
+                    if (update.state.doc.length !== update.startState.doc.length + 1) return;
+                    if (update.state.doc.sliceString(head - 1, head) === "/") syncSlashMenu(update.state, false);
                 }),
             ],
         });
         view = new EditorView({ state, parent: container });
-        return () => view?.destroy();
+        const editor = view;
+        const handleViewportChange = () => updateSlashPosition(editor);
+        editor.scrollDOM.addEventListener("scroll", handleViewportChange, { passive: true });
+        window.addEventListener("resize", handleViewportChange);
+        return () => {
+            editor.scrollDOM.removeEventListener("scroll", handleViewportChange);
+            window.removeEventListener("resize", handleViewportChange);
+            editor.destroy();
+        };
     });
 
     createEffect(
@@ -312,6 +413,16 @@ export function NoteEditor(props: {
                         }}
                     />
                 )}
+            </Show>
+            <Show when={slashMenuOpen()}>
+                <SlashCommandMenu
+                    query={slashQuery()}
+                    position={slashPosition()}
+                    selectedIndex={slashIndex()}
+                    onHover={setSlashIndex}
+                    onSelect={(command) => view && applySlashCommand(view, command)}
+                    onClose={closeSlashMenu}
+                />
             </Show>
         </div>
     );

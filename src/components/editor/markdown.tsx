@@ -22,6 +22,23 @@ marked.use(
     }),
 );
 
+const GITHUB_ALERT_LABELS: Record<string, string> = {
+    NOTE: "Note",
+    TIP: "Tip",
+    IMPORTANT: "Important",
+    WARNING: "Warning",
+    CAUTION: "Caution",
+};
+
+const GITHUB_ALERT_PATTERN = /<blockquote>\s*<p>\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]([\s\S]*?)<\/p>/gi;
+
+export function renderGithubAlerts(html: string): string {
+    return html.replace(GITHUB_ALERT_PATTERN, (_match, type: string, rest: string) => {
+        const body = rest.replace(/^\s+/, "");
+        return `<blockquote class="md-alert md-alert-${type.toLowerCase()}">\n<p class="md-alert-title">${GITHUB_ALERT_LABELS[type.toUpperCase()]}</p>${body ? `\n<p>${body}</p>` : ""}`;
+    });
+}
+
 type DiagramTheme = "light" | "dark";
 type DiagramLanguage = "mermaid" | "excalidraw";
 type MermaidApi = (typeof import("mermaid"))["default"];
@@ -224,7 +241,7 @@ export function Markdown(props: { source: string; class?: string; onChange?: (so
     let renderVersion = 0;
     let themeObserver: MutationObserver | null = null;
     let lastTheme: DiagramTheme | null = null;
-    const html = createMemo(() => marked.parse(props.source) as string);
+    const html = createMemo(() => renderGithubAlerts(marked.parse(props.source) as string));
     const [editingDrawing, setEditingDrawing] = createSignal<{ source: string; scene: ExcalidrawScene } | null>(null);
 
     const editExcalidraw = (source: string) => {

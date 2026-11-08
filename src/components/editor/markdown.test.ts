@@ -6,6 +6,7 @@ import {
     getCachedDiagramMarkup,
     setCachedDiagramMarkup,
 } from "./markdown";
+import { renderGithubAlerts } from "./markdown";
 
 afterEach(() => {
     clearDiagramMarkupCache();
@@ -46,5 +47,18 @@ describe("diagramMarkupCache", () => {
         expect(getCachedDiagramMarkup("mermaid", "diagram-0", "light")).toBe("<svg>0</svg>");
         expect(getCachedDiagramMarkup("mermaid", "diagram-new", "light")).toBe("<svg>new</svg>");
         expect(getCachedDiagramMarkup("mermaid", "diagram-1", "light")).toBeUndefined();
+    });
+});
+
+describe("renderGithubAlerts", () => {
+    it("renders a GitHub alert heading and body as an alert blockquote", () => {
+        expect(renderGithubAlerts("<blockquote>\n<p>[!WARNING] Careful</p>\n</blockquote>")).toContain(
+            '<blockquote class="md-alert md-alert-warning">\n<p class="md-alert-title">Warning</p>\n<p>Careful</p>',
+        );
+    });
+    it("keeps ordinary blockquotes unchanged", () => {
+        expect(renderGithubAlerts("<blockquote><p>Plain text</p></blockquote>")).toBe(
+            "<blockquote><p>Plain text</p></blockquote>",
+        );
     });
 });

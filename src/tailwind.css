@@ -849,6 +849,48 @@ body {
     margin-bottom: 0;
 }
 
+.notes-preview blockquote.md-alert,
+.md-preview blockquote.md-alert {
+    border-left-width: 4px;
+    padding-top: 0.55rem;
+}
+.notes-preview blockquote.md-alert-note,
+.md-preview blockquote.md-alert-note,
+.notes-preview blockquote.md-alert-tip,
+.md-preview blockquote.md-alert-tip,
+.notes-preview blockquote.md-alert-important,
+.md-preview blockquote.md-alert-important {
+    border-left-color: var(--db-accent);
+    background: color-mix(in srgb, var(--db-accent) 9%, transparent);
+}
+.notes-preview blockquote.md-alert-warning,
+.md-preview blockquote.md-alert-warning {
+    border-left-color: var(--db-warning);
+    background: color-mix(in srgb, var(--db-warning) 10%, transparent);
+}
+.notes-preview blockquote.md-alert-caution,
+.md-preview blockquote.md-alert-caution {
+    border-left-color: var(--db-danger);
+    background: color-mix(in srgb, var(--db-danger) 9%, transparent);
+}
+.notes-preview blockquote .md-alert-title,
+.md-preview blockquote .md-alert-title {
+    margin: 0 0 0.35em;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--db-accent);
+}
+.notes-preview blockquote.md-alert-warning .md-alert-title,
+.md-preview blockquote.md-alert-warning .md-alert-title {
+    color: var(--db-warning);
+}
+.notes-preview blockquote.md-alert-caution .md-alert-title,
+.md-preview blockquote.md-alert-caution .md-alert-title {
+    color: var(--db-danger);
+}
+
 /* Lists */
 .notes-preview ul,
 .notes-preview ol,

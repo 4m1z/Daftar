@@ -61,6 +61,8 @@ export const notesAction = action(async (formData: FormData) => {
             result = await createNote({
                 notebookId: String(formData.get("projectId") ?? ""),
                 noteId: String(formData.get("noteId") ?? ""),
+                title: String(formData.get("title") ?? "Untitled"),
+                content: String(formData.get("content") ?? ""),
             });
             break;
         case "updateNote":

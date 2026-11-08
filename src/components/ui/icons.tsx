@@ -128,3 +128,11 @@ export function CompressIcon(props: { class?: string }) {
         </svg>
     );
 }
+
+export function TemplateIcon(props: { class?: string }) {
+    return (
+        <svg viewBox="0 0 16 16" fill="currentColor" class={props.class ?? "h-4 w-4"} aria-hidden="true">
+            <path d="M2.75 2a.75.75 0 0 0-.75.75v10.5a.75.75 0 0 0 .75.75h10.5a.75.75 0 0 0 .75-.75V3.5a.75.75 0 0 0-.22-.53l-3.25-3.25A.75.75 0 0 0 10 2.75H2.75ZM4.5 9.75a1.25 1.25 0 1 1 2.5 0 1.25 1.25 0 0 1-2.5 0Zm2 2.75a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" />
+        </svg>
+    );
+}

@@ -71,7 +71,17 @@ export async function deleteNotebook(id: string) {
     return { updatedAt: new Date() };
 }
 
-export async function createNote({ notebookId, noteId }: { notebookId: string; noteId: string }) {
+export async function createNote({
+    notebookId,
+    noteId,
+    title = "Untitled",
+    content = "",
+}: {
+    notebookId: string;
+    noteId: string;
+    title?: string;
+    content?: string;
+}) {
     const notebook = await prisma.notebook.findUnique({ where: { id: notebookId }, select: { id: true } });
     if (!notebook) throw new Response("Notebook not found", { status: 404 });
 
@@ -79,8 +89,8 @@ export async function createNote({ notebookId, noteId }: { notebookId: string; n
         data: {
             id: noteId,
             notebookId,
-            title: "Untitled",
-            content: "",
+            title,
+            content,
             sortOrder: await nextNoteSortOrder(prisma, notebookId),
         },
         select: { updatedAt: true },

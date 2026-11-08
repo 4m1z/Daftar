@@ -9,6 +9,7 @@ import { useNotesSearch } from "./use-notes-search";
 import { useNotesRoute } from "./use-notes-route";
 import { useNotesStore } from "./use-notes-store";
 import { useSplitLayout } from "./use-split-layout";
+import { useTemplates } from "./use-templates";
 
 export type NotebookFilter = "active" | "archived";
 
@@ -31,6 +32,11 @@ export function useNotesWorkspace() {
 
     const layout = useSplitLayout();
     const editorMode = useEditorMode();
+    const templates = useTemplates();
+    const [templatesDialog, setTemplatesDialog] = createSignal<"pick" | "manage" | null>(null);
+    const openTemplatesPicker = () => setTemplatesDialog("pick");
+    const openTemplatesManager = () => setTemplatesDialog("manage");
+    const closeTemplatesDialog = () => setTemplatesDialog(null);
 
     const search = useNotesSearch({
         projects: store.projects,
@@ -140,7 +146,17 @@ export function useNotesWorkspace() {
         addProject,
         renameProject: store.renameProject,
         addNote: store.addNote,
+        addNoteFromTemplate: store.addNoteFromTemplate,
         patchNote: store.patchNote,
+        templates: templates.templates,
+        createTemplate: templates.createTemplate,
+        updateTemplate: templates.updateTemplate,
+        deleteTemplate: templates.deleteTemplate,
+        duplicateTemplate: templates.duplicateTemplate,
+        templatesDialog,
+        openTemplatesPicker,
+        openTemplatesManager,
+        closeTemplatesDialog,
         // editor layout
         ...layout,
         ...editorMode,

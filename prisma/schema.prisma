@@ -34,3 +34,18 @@ model Note {
   @@index([notebookId, sortOrder], map: "NotesEntry_notebookId_sortOrder_idx")
   @@map("NotesEntry")
 }
+
+model Template {
+  id           String   @id
+  name         String
+  description  String?
+  content      String   @default("")
+  category     String
+  isPredefined Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([category], map: "NoteTemplate_category_idx")
+  @@index([isPredefined], map: "NoteTemplate_isPredefined_idx")
+  @@map("NoteTemplate")
+}
