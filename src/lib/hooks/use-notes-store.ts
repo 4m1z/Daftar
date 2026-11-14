@@ -84,7 +84,7 @@ export function useNotesStore(route: NotesRoute) {
     createEffect(
         () => selectedProject(),
         (projectId) => {
-            const project = projects().find((item) => item.id === projectId);
+            const project = untrack(projects).find((item) => item.id === projectId);
             if (!project) return;
             const sortedIds = sortNotesByUpdated(project.notes).map((note) => note.id);
             setNoteOrderByProject((current) => ({ ...current, [project.id]: sortedIds }));

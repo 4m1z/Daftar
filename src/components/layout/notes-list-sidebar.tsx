@@ -1,6 +1,6 @@
 import { For, Show } from "solid-js";
 
-import { NoteIcon, SmallPlusIcon, TrashIcon } from "~/components/ui/icons";
+import { ArchiveIcon, NoteIcon, RestoreIcon, SmallPlusIcon, TrashIcon } from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 import { noteSnippet, relativeTime } from "~/lib/utils/notes";
 
@@ -38,7 +38,7 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
                 {(projectId) => (
                     <div class="notes-list-enter flex h-full min-h-0 w-full flex-col" data-project={projectId}>
                         <div
-                            class="flex min-h-12 shrink-0 items-center gap-1 border-b px-2"
+                            class="flex min-h-12 shrink-0 items-center gap-1 border-b px-2 py-1.5"
                             style={{ "border-color": "var(--db-border)" }}
                         >
                             <button
@@ -75,25 +75,65 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
                                     </span>
                                 }
                             >
-                                <input
-                                    value={ws.activeProject()?.name ?? ""}
-                                    onInput={(event) =>
-                                        ws.renameProject(ws.selectedProject(), event.currentTarget.value)
-                                    }
-                                    class="min-w-0 flex-1 truncate bg-transparent text-[13px] font-semibold outline-none"
-                                    style={{ color: "var(--db-text)", "caret-color": "var(--db-accent)" }}
-                                    placeholder="Notebook name"
-                                    aria-label="Notebook name"
-                                    data-notes-heading
-                                />
-                                <Show when={ws.activeProject()?.isArchived}>
-                                    <span
-                                        class="ml-1 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em]"
-                                        style={{ background: "var(--db-accent-soft)", color: "var(--db-accent)" }}
-                                    >
-                                        Archived
-                                    </span>
-                                </Show>
+                                {(project) => (
+                                    <>
+                                        <input
+                                            value={project().name}
+                                            onInput={(event) =>
+                                                ws.renameProject(ws.selectedProject(), event.currentTarget.value)
+                                            }
+                                            title={project().name}
+                                            class="min-w-0 flex-1 bg-transparent text-[13px] font-semibold outline-none"
+                                            style={{ color: "var(--db-text)", "caret-color": "var(--db-accent)" }}
+                                            placeholder="Notebook name"
+                                            aria-label="Notebook name"
+                                            data-notes-heading
+                                        />
+                                        <Show when={project().isArchived}>
+                                            <span
+                                                class="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em]"
+                                                style={{ background: "var(--db-accent-soft)", color: "var(--db-accent)" }}
+                                            >
+                                                Archived
+                                            </span>
+                                        </Show>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                void (project().isArchived
+                                                    ? ws.restoreProject(project().id)
+                                                    : ws.archiveProject(project().id))
+                                            }
+                                            disabled={ws.isProjectBusy(project().id)}
+                                            title={project().isArchived ? "Restore notebook" : "Archive notebook"}
+                                            aria-label={`${project().isArchived ? "Restore" : "Archive"} notebook: ${project().name}`}
+                                            class="notes-action flex h-8 w-8 shrink-0 items-center justify-center rounded transition-colors hover:bg-[var(--db-surface2)] hover:text-[var(--db-accent)] focus-visible:outline-2 focus-visible:outline-offset-1 disabled:opacity-40"
+                                            style={{ color: "var(--db-text3)", "outline-color": "var(--db-accent)" }}
+                                        >
+                                            <Show
+                                                when={project().isArchived}
+                                                fallback={<ArchiveIcon class="h-3.5 w-3.5" />}
+                                            >
+                                                <RestoreIcon class="h-3.5 w-3.5" />
+                                            </Show>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => ws.setPendingDelete({
+                                                kind: "project",
+                                                id: project().id,
+                                                name: project().name,
+                                            })}
+                                            disabled={ws.isProjectBusy(project().id)}
+                                            title="Delete notebook"
+                                            aria-label={`Delete notebook: ${project().name}`}
+                                            class="notes-action flex h-8 w-8 shrink-0 items-center justify-center rounded transition-colors hover:bg-[color-mix(in_srgb,var(--db-danger)_12%,transparent)] hover:text-[var(--db-danger)] focus-visible:outline-2 focus-visible:outline-offset-1 disabled:opacity-40"
+                                            style={{ color: "var(--db-text3)", "outline-color": "var(--db-accent)" }}
+                                        >
+                                            <TrashIcon class="h-3.5 w-3.5" />
+                                        </button>
+                                    </>
+                                )}
                             </Show>
                             <button
                                 type="button"
@@ -158,8 +198,9 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
                                                 class="flex min-w-0 flex-1 flex-col rounded px-1.5 py-1 text-left focus-visible:outline-2 focus-visible:outline-offset-1"
                                             >
                                                 <span
-                                                    class="w-full truncate text-[13px] font-semibold leading-snug"
+                                                    class="mt-0.5 line-clamp-2 w-full whitespace-normal break-words text-[13px] font-semibold leading-snug"
                                                     style={{ color: active() ? "var(--db-text)" : "var(--db-text2)" }}
+                                                    title={note.title || "Untitled"}
                                                 >
                                                     {note.title || "Untitled"}
                                                 </span>

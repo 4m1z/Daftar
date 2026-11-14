@@ -1,5 +1,5 @@
 import { Title } from "@solidjs/meta";
-import { createEffect, createMemo, createSignal, Show, type ParentProps } from "solid-js";
+import { createEffect, createMemo, createSignal, Show, untrack, type ParentProps } from "solid-js";
 
 import { DeleteConfirmDialog } from "~/components/dialogs/delete-confirm-dialog";
 import { NotesSearchDialog } from "~/components/dialogs/notes-search-dialog";
@@ -22,7 +22,7 @@ function NotesWorkspaceLayout(props: ParentProps) {
     createEffect(
         () => depth(),
         (current) => {
-            const previous = prevDepth();
+            const previous = untrack(prevDepth);
             if (current !== previous) {
                 setDirection(current > previous ? "forward" : "back");
                 setPrevDepth(current);

@@ -1,25 +1,14 @@
 import { For, Show } from "solid-js";
 
 import { ThemeToggle } from "~/components/ui/theme";
-import { ArchiveIcon, EditIcon, FolderIcon, RestoreIcon, SmallPlusIcon, TemplateIcon, TrashIcon } from "~/components/ui/icons";
+import { EditIcon, SmallPlusIcon, TemplateIcon } from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
+import { notebookColor } from "~/lib/utils/notes";
 import { NotebookFilterTabs } from "./notebook-filter-tabs";
 
 /** Left rail: notebook list, archive filter, theme toggle, and save status. */
 export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
     const ws = props.workspace;
-
-    // When archiving/restoring removes the focused row, move focus to the
-    // filter tabs so keyboard users are not left without a focus target.
-    const handleArchiveToggle = (event: Event, projectId: string, archived: boolean) => {
-        const button = event.currentTarget as HTMLElement;
-        const action = archived ? ws.restoreProject(projectId) : ws.archiveProject(projectId);
-        void action.then((changed) => {
-            if (changed && !button.isConnected) {
-                document.querySelector<HTMLElement>("[data-notebook-tabs]")?.focus();
-            }
-        });
-    };
 
     const handlePick = (event: MouseEvent, projectId: string) => {
         const viaKeyboard = event.detail === 0;
@@ -39,10 +28,10 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
             style={{ background: "var(--db-bg)", "border-color": "var(--db-border)" }}
         >
             <div
-                class="flex h-auto shrink-0 flex-col gap-1.5 border-b px-2 py-1.5"
+                class="flex h-auto shrink-0 flex-col gap-2 border-b px-2.5 py-2"
                 style={{ "border-color": "var(--db-border)" }}
             >
-                <div class="flex min-h-12 items-center justify-between gap-1">
+                <div class="flex min-h-10 items-center justify-between gap-1">
                     <span
                         class="text-[11px] font-bold uppercase tracking-widest"
                         style={{ color: "var(--db-text2)" }}
@@ -50,6 +39,7 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                         Notebooks
                     </span>
                     <div class="flex shrink-0 items-center gap-1">
+                        <ThemeToggle />
                         <button
                             type="button"
                             onClick={() => ws.setSearchOpen(true)}
@@ -87,10 +77,9 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                         </p>
                     )}
                 </Show>
-                <ThemeToggle />
             </div>
 
-            <div class="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1 py-1" data-notebooks-list>
+            <div class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-1.5 py-2" data-notebooks-list>
                 <Show
                     when={ws.visibleProjects().length > 0}
                     fallback={
@@ -102,20 +91,17 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                     <For each={ws.visibleProjects()}>
                         {(project) => {
                             const active = () => project.id === ws.selectedProject();
-                            const busy = () => ws.isProjectBusy(project.id);
-                            const label = () => (project.isArchived ? "Restore notebook" : "Archive notebook");
+                            const count = () => project.notes.length;
                             return (
                                 <div
                                     data-notebook-row={project.id}
                                     data-active={active() ? "true" : "false"}
-                                    class={`group relative flex min-h-9 items-center gap-0.5 rounded-md px-1.5 py-0.5 transition-colors ${
-                                        active() ? "" : "hover:bg-[var(--db-surface)]"
-                                    }`}
+                                    class="group relative rounded-lg transition-colors"
                                     style={{ background: active() ? "var(--db-accent-soft)" : undefined }}
                                 >
                                     <Show when={active()}>
                                         <span
-                                            class="absolute inset-y-1 left-0 w-0.5 rounded-full"
+                                            class="absolute inset-y-2 left-0 w-0.5 rounded-full"
                                             style={{ background: "var(--db-accent)" }}
                                             aria-hidden="true"
                                         />
@@ -125,85 +111,41 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                                         onClick={(event) => handlePick(event, project.id)}
                                         title={project.name}
                                         aria-current={active() ? "true" : undefined}
-                                        aria-label={`Open notebook: ${project.name}, ${project.notes.length} notes`}
-                                        class="notes-row-action flex min-h-8 min-w-0 flex-1 items-center gap-2 rounded px-1.5 py-1.5 text-left focus-visible:outline-2 focus-visible:outline-offset-1"
+                                        aria-label={`Open notebook: ${project.name}, ${count()} ${count() === 1 ? "note" : "notes"}`}
+                                        class="notes-row-action flex min-h-11 w-full items-start gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-[var(--db-surface)] focus-visible:outline-2 focus-visible:outline-offset-1"
                                         style={{ "outline-color": "var(--db-accent)" }}
                                     >
                                         <span
-                                            class="flex shrink-0 items-center justify-center"
-                                            style={{ color: "var(--db-text3)" }}
+                                            class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
+                                            style={{ background: notebookColor(project.color) }}
                                             aria-hidden="true"
-                                        >
-                                            <FolderIcon />
-                                        </span>
-                                        <span
-                                            class="min-w-0 flex-1 truncate text-[13px] font-medium"
-                                            style={{ color: active() ? "var(--db-text)" : "var(--db-text2)" }}
-                                        >
-                                            {project.name}
-                                        </span>
-                                        <span
-                                            aria-hidden="true"
-                                            title={`${project.notes.length} notes`}
-                                            class="ml-auto inline-flex min-w-6 shrink-0 items-center justify-center rounded-full border px-1.5 py-px text-[11px] font-medium tabular-nums transition-colors group-hover:bg-[var(--db-bg)]"
-                                            style={{
-                                                background: "var(--db-surface)",
-                                                "border-color": "var(--db-border)",
-                                                color: "var(--db-text3)",
-                                            }}
-                                        >
-                                            {project.notes.length}
+                                        />
+                                        <span class="min-w-0 flex-1">
+                                            <span
+                                                class="block whitespace-normal break-words text-[13px] font-medium leading-snug"
+                                                style={{ color: active() ? "var(--db-text)" : "var(--db-text2)" }}
+                                            >
+                                                {project.name}
+                                            </span>
+                                            <span
+                                                class="mt-0.5 flex items-center gap-1.5 text-[10px] font-medium tabular-nums"
+                                                style={{ color: "var(--db-text3)" }}
+                                            >
+                                                {count()} {count() === 1 ? "note" : "notes"}
+                                                <Show when={project.isArchived}>
+                                                    <span
+                                                        class="rounded px-1 py-px text-[9px] font-semibold uppercase tracking-[0.08em]"
+                                                        style={{
+                                                            background: "var(--db-surface2)",
+                                                            color: "var(--db-text3)",
+                                                        }}
+                                                    >
+                                                        Archived
+                                                    </span>
+                                                </Show>
+                                            </span>
                                         </span>
                                     </button>
-                                    <div class="flex shrink-0 items-center gap-0.5">
-                                        <button
-                                            type="button"
-                                            onClick={(event) => {
-                                                event.stopPropagation();
-                                                handleArchiveToggle(event, project.id, project.isArchived);
-                                            }}
-                                            disabled={busy()}
-                                            data-notebook-action="archive"
-                                            class={`flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-[var(--db-accent-soft)] hover:text-[var(--db-accent)] focus-visible:outline-2 focus-visible:outline-offset-1 disabled:opacity-40 ${
-                                                busy()
-                                                    ? "visible"
-                                                    : "invisible [@media(hover:none)]:visible focus-visible:visible group-focus-within:visible group-hover:visible"
-                                            }`}
-                                            style={{ color: "var(--db-text3)", "outline-color": "var(--db-accent)" }}
-                                            title={label()}
-                                            aria-label={`${label()}: ${project.name}`}
-                                        >
-                                            <Show
-                                                when={project.isArchived}
-                                                fallback={<ArchiveIcon class="h-3.5 w-3.5" />}
-                                            >
-                                                <RestoreIcon class="h-3.5 w-3.5" />
-                                            </Show>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={(event) => {
-                                                event.stopPropagation();
-                                                ws.setPendingDelete({
-                                                    kind: "project",
-                                                    id: project.id,
-                                                    name: project.name,
-                                                });
-                                            }}
-                                            disabled={busy()}
-                                            data-notebook-action="delete"
-                                            class={`flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-[color-mix(in_srgb,var(--db-danger)_12%,transparent)] hover:text-[var(--db-danger)] focus-visible:outline-2 focus-visible:outline-offset-1 disabled:opacity-40 ${
-                                                busy()
-                                                    ? "visible"
-                                                    : "invisible [@media(hover:none)]:visible focus-visible:visible group-focus-within:visible group-hover:visible"
-                                            }`}
-                                            style={{ color: "var(--db-text3)", "outline-color": "var(--db-accent)" }}
-                                            title="Delete notebook"
-                                            aria-label={`Delete notebook: ${project.name}`}
-                                        >
-                                            <TrashIcon class="h-3.5 w-3.5" />
-                                        </button>
-                                    </div>
                                 </div>
                             );
                         }}

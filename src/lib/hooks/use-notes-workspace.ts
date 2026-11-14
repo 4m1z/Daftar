@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal } from "solid-js";
+import { createEffect, createMemo, createSignal, untrack } from "solid-js";
 
 import { useTheme } from "~/components/ui/theme";
 
@@ -83,7 +83,7 @@ export function useNotesWorkspace() {
             const selectionChanged = current.selectedId !== previousSelectedProject;
             previousSelectedProject = current.selectedId;
             if (!selectionChanged || !current.group) return;
-            if (current.group !== notebookFilter()) setNotebookFilter(current.group);
+            if (current.group !== untrack(notebookFilter)) setNotebookFilter(current.group);
         },
     );
 
@@ -92,7 +92,7 @@ export function useNotesWorkspace() {
     createEffect(
         () => route.selectedNote(),
         (noteId) => {
-            if (!noteId && layout.focusMode()) layout.setFocusMode(false);
+            if (!noteId && untrack(layout.focusMode)) layout.setFocusMode(false);
         },
     );
 

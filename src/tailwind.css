@@ -319,7 +319,7 @@ body {
     display: flex;
 }
 .notes-pane-notebooks {
-    width: 200px;
+    width: 256px;
     flex-shrink: 0;
     border-right: 1px solid var(--db-border);
     overflow: hidden;
@@ -329,16 +329,16 @@ body {
 }
 @media (min-width: 1536px) {
     .notes-pane-notebooks {
-        width: 220px;
+        width: 280px;
     }
 }
 .notes-pane-notebooks > * {
-    width: 200px;
+    width: 256px;
     flex-shrink: 0;
 }
 @media (min-width: 1536px) {
     .notes-pane-notebooks > * {
-        width: 220px;
+        width: 280px;
     }
 }
 .notes-pane-notes {
