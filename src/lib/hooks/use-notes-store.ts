@@ -195,7 +195,9 @@ export function useNotesStore(route: NotesRoute) {
     };
 
     const addNoteFromTemplate = (template: { name: string; content: string }) => {
-        if (!activeProject()) return null;
+        const project = activeProject();
+        if (!project) return null;
+        const previousNoteId = selectedNote();
         const noteId = uid();
         const note: NoteItem = {
             id: noteId,
@@ -208,8 +210,11 @@ export function useNotesStore(route: NotesRoute) {
                 project.id === selectedProject() ? { ...project, notes: [note, ...project.notes] } : project,
             ),
         );
-        submit({ intent: "createNote", projectId: selectedProject(), noteId, title: note.title, content: note.content });
-        route.pickNote(noteId);
+        // Navigation can remount the workspace; wait for saved data to be available.
+        void submit({ intent: "createNote", projectId: project.id, noteId, title: note.title, content: note.content })
+            .then((saved) => {
+                if (saved && selectedProject() === project.id && selectedNote() === previousNoteId) route.pickNote(noteId);
+            });
         return noteId;
     };
 

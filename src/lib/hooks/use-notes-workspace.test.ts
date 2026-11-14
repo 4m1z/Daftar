@@ -1,15 +1,24 @@
+import { createSignal } from "solid-js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { flushEffects, renderReactive } from "~/lib/test-utils";
 
+const mocks = vi.hoisted(() => ({
+    location: { pathname: "/" },
+    navigate: vi.fn(),
+}));
+
 vi.mock("@solidjs/router", () => ({
-    useLocation: () => ({ pathname: "/" }),
-    useNavigate: () => vi.fn(),
+    useLocation: () => mocks.location,
+    useNavigate: () => mocks.navigate,
     useSearchParams: () => [{}, vi.fn()],
     useAction: () => vi.fn().mockResolvedValue({ ok: true }),
 }));
 vi.mock("~/lib/actions/notes", () => ({
-    getNotesData: () => ({ projects: [], selectedProjectId: "", selectedNoteId: "", updatedAt: null }),
+    getNotesData: () => ({
+        projects: [{ id: "p1", name: "Notebook", color: "1", isArchived: false, notes: [] }],
+        selectedProjectId: "p1", selectedNoteId: "", updatedAt: null,
+    }),
     notesAction: vi.fn(),
 }));
 vi.mock("~/lib/actions/templates", () => ({ getTemplatesData: () => [], templatesAction: vi.fn() }));
@@ -24,10 +33,40 @@ const setup = () => {
     return result;
 };
 
-beforeEach(() => window.localStorage.clear());
+beforeEach(() => {
+    window.localStorage.clear();
+    const [pathname, setPathname] = createSignal("/");
+    mocks.location = { get pathname() { return pathname(); } };
+    mocks.navigate.mockReset().mockImplementation((path: string) => setPathname(path));
+});
 afterEach(() => {
     cleanups.splice(0).forEach((dispose) => dispose());
     vi.restoreAllMocks();
+});
+
+describe("workspace route validation", () => {
+    it("keeps a newly created template note selected before server data catches up", async () => {
+        mocks.navigate("/notes/p1");
+        const workspace = setup();
+        await flushEffects();
+        const noteId = workspace.addNoteFromTemplate({ name: "Meeting", content: "## Agenda" });
+        await vi.waitFor(async () => {
+            await flushEffects();
+            expect(workspace.selectedNote()).toBe(noteId);
+        });
+        expect(workspace.activeNote()).toMatchObject({ id: noteId, title: "Meeting", content: "## Agenda" });
+    });
+
+    it.each([
+        ["/notes/missing", "/"],
+        ["/notes/p1/note/missing/edit-mode", "/notes/p1"],
+    ])("corrects invalid deep link %s after hydration", async (path, expected) => {
+        mocks.navigate(path);
+        setup();
+        await flushEffects();
+        await flushEffects();
+        expect(mocks.location.pathname).toBe(expected);
+    });
 });
 
 describe("notebook sidebar preference", () => {

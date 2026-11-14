@@ -22,8 +22,9 @@ export function useNotesWorkspace() {
 
     createEffect(
         () => {
-            const loaded = store.data();
-            return loaded ? route.canonicalPath(loaded.projects) : null;
+            const projects = store.projects();
+            // Optimistic notes can be selected before server data catches up.
+            return store.hasLoaded() ? route.canonicalPath(projects) : null;
         },
         (path) => {
             if (path) queueMicrotask(() => route.replacePath(path));

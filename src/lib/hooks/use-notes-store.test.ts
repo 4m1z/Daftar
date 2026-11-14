@@ -33,7 +33,7 @@ import { useNotesStore } from "./use-notes-store";
 
 function setup() {
     const [selectedProject] = createSignal("p1");
-    const [selectedNote] = createSignal("n1");
+    const [selectedNote, setSelectedNote] = createSignal("n1");
     const route = {
         selectedProject,
         selectedNote,
@@ -45,7 +45,7 @@ function setup() {
         setSplitMode: vi.fn(),
     } as unknown as NotesRoute;
     const { result, dispose } = renderReactive(() => useNotesStore(route));
-    return { store: result, route, dispose };
+    return { store: result, route, setSelectedNote, dispose };
 }
 
 beforeEach(() => {
@@ -92,10 +92,41 @@ describe("useNotesStore creation", () => {
         await flushEffects();
 
         expect(store.activeProject()?.notes[0]).toMatchObject({ title: "Daily", content: expect.stringMatching(/^# \d{4}-\d{2}-\d{2}$/) });
-        expect(route.pickNote).toHaveBeenCalledWith(id);
+        await vi.waitFor(() => expect(route.pickNote).toHaveBeenCalledWith(id));
         const form = mocks.runAction.mock.calls[0][0] as FormData;
         expect(form.get("title")).toBe("Daily");
         expect(form.get("content")).toBe(store.activeProject()?.notes[0].content);
+        dispose();
+    });
+
+    it("waits for a template note to be saved before navigating to it", async () => {
+        const { store, route, dispose } = setup();
+        await flushEffects();
+        let resolveCreate!: (value: unknown) => void;
+        mocks.runAction.mockImplementationOnce(() => new Promise((resolve) => (resolveCreate = resolve)));
+
+        const id = store.addNoteFromTemplate({ name: "Meeting", content: "Agenda" });
+        await flushEffects();
+        expect(store.activeProject()?.notes[0].id).toBe(id);
+        expect(route.pickNote).not.toHaveBeenCalled();
+
+        resolveCreate({ ok: true });
+        await vi.waitFor(() => expect(route.pickNote).toHaveBeenCalledWith(id));
+        dispose();
+    });
+
+    it("keeps the user's new selection while a template note finishes saving", async () => {
+        const { store, route, setSelectedNote, dispose } = setup();
+        await flushEffects();
+        let resolveCreate!: (value: unknown) => void;
+        mocks.runAction.mockImplementationOnce(() => new Promise((resolve) => (resolveCreate = resolve)));
+
+        store.addNoteFromTemplate({ name: "Meeting", content: "Agenda" });
+        setSelectedNote("");
+        resolveCreate({ ok: true });
+        await vi.waitFor(() => expect(store.isSaving()).toBe(false));
+        await flushEffects();
+        expect(route.pickNote).not.toHaveBeenCalled();
         dispose();
     });
 });
