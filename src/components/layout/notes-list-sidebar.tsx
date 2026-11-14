@@ -172,6 +172,14 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
                             </button>
                         </div>
 
+                        <Show when={ws.archiveError()}>
+                            {(message) => (
+                                <p role="alert" class="px-3 py-2 text-[11px] leading-snug" style={{ color: "var(--db-danger)" }}>
+                                    {message()}
+                                </p>
+                            )}
+                        </Show>
+
                         <div class="flex min-h-0 flex-1 flex-col overflow-y-auto" data-notes-list>
                             <Show when={ws.activeProject()?.notes.length === 0}>
                                 <div class="flex flex-col items-center justify-center gap-2 py-10 text-center">

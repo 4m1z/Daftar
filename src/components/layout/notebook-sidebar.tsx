@@ -81,13 +81,6 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                     activeCount={ws.activeNotebookCount}
                     archivedCount={ws.archivedNotebookCount}
                 />
-                <Show when={ws.archiveError()}>
-                    {(message) => (
-                        <p role="alert" class="text-[11px] leading-snug text-red-400">
-                            {message()}
-                        </p>
-                    )}
-                </Show>
             </div>
 
             <div class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-1.5 py-2" data-notebooks-list>
