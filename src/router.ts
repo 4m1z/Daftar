@@ -23,6 +23,7 @@ export const Router = createRouter({
                             path: "/note/:noteId",
                             component: NoteLayoutRoute,
                             children: [
+                                { path: "/", component: NoteModeRoute },
                                 { path: "/:mode", component: NoteModeRoute },
                             ],
                         },

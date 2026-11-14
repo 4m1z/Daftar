@@ -27,8 +27,8 @@ describe("notes routes", () => {
         expect(notesNotebookPath("work notes")).toBe("/notes/work%20notes");
     });
 
-    it("builds canonical note URLs and defaults to edit mode", () => {
-        expect(notesNotePath("p1", "note/1")).toBe("/notes/p1/note/note%2F1/edit-mode");
+    it("builds canonical note URLs and defaults to split view", () => {
+        expect(notesNotePath("p1", "note/1")).toBe("/notes/p1/note/note%2F1/both");
         expect(notesNotePath("p1", "n1", "view-mode")).toBe("/notes/p1/note/n1/view-mode");
         expect(notesNotePath("p1", "n1", "both")).toBe("/notes/p1/note/n1/both");
     });
@@ -56,7 +56,7 @@ describe("notes routes", () => {
         route.selectNote("p1", "n2");
 
         expect(router.navigate).toHaveBeenCalledWith(
-            "/notes/p1/note/n2/edit-mode?search=routing",
+            "/notes/p1/note/n2/both?search=routing",
             { replace: false },
         );
     });
@@ -65,13 +65,14 @@ describe("notes routes", () => {
         router.location.pathname = "/notes/p1/note/n1/edit-mode";
         const route = useNotesRoute();
 
+        expect(route.splitMode()).toBe("edit");
         route.pickNote("n1");
 
         expect(router.navigate).not.toHaveBeenCalled();
 
         route.pickNote("n2");
 
-        expect(router.navigate).toHaveBeenCalledWith("/notes/p1/note/n2/edit-mode", {
+        expect(router.navigate).toHaveBeenCalledWith("/notes/p1/note/n2/both", {
             replace: false,
         });
     });
@@ -101,9 +102,14 @@ describe("notes routes", () => {
         router.location.pathname = "/notes/p1/note/missing/edit-mode";
         expect(useNotesRoute().canonicalPath(projects)).toBe("/notes/p1?search=routing");
 
+        router.location.pathname = "/notes/p1/note/n1";
+        expect(useNotesRoute().splitMode()).toBe("split");
+        expect(useNotesRoute().canonicalPath(projects)).toBe("/notes/p1/note/n1/both?search=routing");
+
         router.location.pathname = "/notes/p1/note/n1/invalid";
+        expect(useNotesRoute().splitMode()).toBe("split");
         expect(useNotesRoute().canonicalPath(projects))
-            .toBe("/notes/p1/note/n1/edit-mode?search=routing");
+            .toBe("/notes/p1/note/n1/both?search=routing");
     });
 
     it("treats archived notebooks as valid deep-link targets", () => {

@@ -14,7 +14,7 @@ const notesRootPath = (query: string | undefined) => query ? `/?search=${encodeU
 export const notesNotebookPath = (notebookId: string, query?: string) =>
     `/notes/${encodeURIComponent(notebookId)}${searchPath(query)}`;
 
-export const notesNotePath = (notebookId: string, noteId: string, mode: NotesViewMode = "edit-mode", query?: string) =>
+export const notesNotePath = (notebookId: string, noteId: string, mode: NotesViewMode = "both", query?: string) =>
     `/notes/${encodeURIComponent(notebookId)}/note/${encodeURIComponent(noteId)}/${mode}${searchPath(query)}`;
 
 const decodePathSegment = (value: string | undefined) => {
@@ -27,7 +27,7 @@ const decodePathSegment = (value: string | undefined) => {
 };
 
 const parseNotesPath = (pathname: string) => {
-    const match = /^\/notes\/([^/]+)(?:\/note\/([^/]+)\/([^/]+))?\/?$/.exec(pathname);
+    const match = /^\/notes\/([^/]+)(?:\/note\/([^/]+)(?:\/([^/]+))?)?\/?$/.exec(pathname);
     return {
         notebookId: match?.[1],
         noteId: match?.[2],
@@ -37,8 +37,8 @@ const parseNotesPath = (pathname: string) => {
 
 const toSplitMode = (mode: string | undefined): SplitMode => {
     if (mode === "view-mode") return "preview";
-    if (mode === "both") return "split";
-    return "edit";
+    if (mode === "edit-mode") return "edit";
+    return "split";
 };
 
 const toViewMode = (mode: SplitMode): NotesViewMode => {
@@ -65,7 +65,7 @@ export function useNotesRoute() {
     const showRoot = (replace = false) => navigate(notesRootPath(searchParams.search), { replace });
     const pickProject = (projectId: string, replace = false) =>
         navigate(notesNotebookPath(projectId, searchParams.search), { replace });
-    const selectNote = (projectId: string, noteId: string, mode: NotesViewMode = "edit-mode", replace = false) =>
+    const selectNote = (projectId: string, noteId: string, mode: NotesViewMode = "both", replace = false) =>
         navigate(notesNotePath(projectId, noteId, mode, searchParams.search), { replace });
     const pickNote = (noteId: string) => {
         const projectId = selectedProject();
@@ -91,7 +91,7 @@ export function useNotesRoute() {
         if (!noteId) return null;
         if (!project.notes.some((note) => note.id === noteId)) return notesNotebookPath(projectId, searchParams.search);
         if (!VIEW_MODES.has(params().mode as NotesViewMode)) {
-            return notesNotePath(projectId, noteId, "edit-mode", searchParams.search);
+            return notesNotePath(projectId, noteId, "both", searchParams.search);
         }
         return null;
     };
