@@ -24,6 +24,7 @@ const mime = {
     ".webp": "image/webp",
     ".woff": "font/woff",
     ".woff2": "font/woff2",
+    ".ttf": "font/ttf",
 };
 
 function acceptsGzip(request) {

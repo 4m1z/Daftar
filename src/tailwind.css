@@ -4,6 +4,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: "Comic Shanns Mono";
+    src: url("/fonts/ComicShannsMono-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Include dialogs rendered beside the workspace. */
+:root:has(.db-page) {
+    --font-sans: "Comic Shanns Mono", ui-monospace, monospace;
+    --font-mono: var(--font-sans);
+}
+
+:root:has(.db-page) .font-sans,
+:root:has(.db-page) .font-mono,
+:root:has(.db-page) pre,
+:root:has(.db-page) code,
+:root:has(.db-page) kbd,
+:root:has(.db-page) samp {
+    font-family: var(--font-mono);
+}
+
 html,
 body {
     background: var(--app-bg);
