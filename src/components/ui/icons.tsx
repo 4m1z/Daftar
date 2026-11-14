@@ -37,6 +37,21 @@ export function SunIcon(props: { class?: string }) {
     );
 }
 
+export function ChevronRightIcon(props: { class?: string }) {
+    return (
+        <svg
+            class={props.class ?? "h-4 w-4"}
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            aria-hidden="true"
+        >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 4.5 13 10l-5.5 5.5" />
+        </svg>
+    );
+}
+
 export function SmallPlusIcon(props: { class?: string }) {
     return (
         <svg viewBox="0 0 16 16" fill="currentColor" class={props.class ?? "h-3.5 w-3.5"}>

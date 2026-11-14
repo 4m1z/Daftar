@@ -1,6 +1,7 @@
 import { For, Loading, Show, type ParentProps } from "solid-js";
 
 import {
+    ChevronRightIcon,
     CompressIcon,
     EditIcon,
     ExpandIcon,
@@ -231,6 +232,17 @@ export function EmptyNotePane(props: { workspace: NotesWorkspace }) {
                             <SmallPlusIcon />
                             New notebook
                         </button>
+                        <Show when={!ws.sidebarVisible()}>
+                            <button
+                                type="button"
+                                onClick={ws.toggleSidebar}
+                                class="notes-desktop-only flex min-h-8 items-center gap-1.5 rounded px-3 py-1.5 text-[12px] transition-colors hover:bg-[var(--db-surface)] focus-visible:outline-2 focus-visible:outline-offset-2"
+                                style={{ color: "var(--db-text2)", "outline-color": "var(--db-accent)" }}
+                            >
+                                <ChevronRightIcon class="h-3.5 w-3.5" />
+                                Show notebooks
+                            </button>
+                        </Show>
                     </>
                 }
             >

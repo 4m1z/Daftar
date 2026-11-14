@@ -375,6 +375,13 @@ body {
     opacity: 0;
     border-right-color: transparent;
 }
+@media (min-width: 1024px) {
+    .notes-frame[data-sidebar-hidden="true"] .notes-pane-notebooks {
+        width: 0;
+        opacity: 0;
+        border-right-color: transparent;
+    }
+}
 .notes-pane-editor {
     flex: 1;
     min-width: 0;
@@ -419,6 +426,15 @@ body {
 @media (max-width: 1023px) {
     .notes-compact-only {
         display: flex;
+    }
+}
+
+.notes-desktop-only {
+    display: flex;
+}
+@media (max-width: 1023px) {
+    .notes-desktop-only {
+        display: none;
     }
 }
 

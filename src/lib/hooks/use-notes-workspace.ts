@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, untrack } from "solid-js";
+import { createEffect, createMemo, createSignal, onSettled, untrack } from "solid-js";
 
 import { useTheme } from "~/components/ui/theme";
 
@@ -33,6 +33,26 @@ export function useNotesWorkspace() {
     const layout = useSplitLayout();
     const editorMode = useEditorMode();
     const templates = useTemplates();
+    const [sidebarVisible, setSidebarVisible] = createSignal(true);
+
+    onSettled(() => {
+        try {
+            setSidebarVisible(window.localStorage.getItem("notes-sidebar-visible") !== "false");
+        } catch {
+            // Storage can be unavailable; keep the sidebar usable for this session.
+        }
+    });
+
+    const toggleSidebar = () => {
+        const visible = !sidebarVisible();
+        setSidebarVisible(visible);
+        try {
+            window.localStorage.setItem("notes-sidebar-visible", String(visible));
+        } catch {
+            // Keep the in-memory preference when storage is unavailable.
+        }
+    };
+
     const [templatesDialog, setTemplatesDialog] = createSignal<"pick" | "manage" | null>(null);
     const openTemplatesPicker = () => setTemplatesDialog("pick");
     const openTemplatesManager = () => setTemplatesDialog("manage");
@@ -157,6 +177,8 @@ export function useNotesWorkspace() {
         openTemplatesPicker,
         openTemplatesManager,
         closeTemplatesDialog,
+        sidebarVisible,
+        toggleSidebar,
         // editor layout
         ...layout,
         ...editorMode,

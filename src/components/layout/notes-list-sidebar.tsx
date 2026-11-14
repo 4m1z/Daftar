@@ -1,6 +1,8 @@
 import { For, Show } from "solid-js";
 
-import { ArchiveIcon, NoteIcon, RestoreIcon, SmallPlusIcon, TrashIcon } from "~/components/ui/icons";
+import {
+    ArchiveIcon, ChevronRightIcon, NoteIcon, RestoreIcon, SmallPlusIcon, TemplateIcon, TrashIcon,
+} from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 import { noteSnippet, relativeTime } from "~/lib/utils/notes";
 
@@ -41,6 +43,18 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
                             class="flex min-h-12 shrink-0 items-center gap-1 border-b px-2 py-1.5"
                             style={{ "border-color": "var(--db-border)" }}
                         >
+                            <Show when={!ws.sidebarVisible()}>
+                                <button
+                                    type="button"
+                                    onClick={ws.toggleSidebar}
+                                    title="Show notebook sidebar (Ctrl/Cmd+/)"
+                                    aria-label="Show notebook sidebar"
+                                    class="notes-desktop-only notes-action flex h-8 w-8 shrink-0 items-center justify-center rounded transition-colors hover:bg-[var(--db-surface2)] focus-visible:outline-2 focus-visible:outline-offset-1"
+                                    style={{ color: "var(--db-text3)", "outline-color": "var(--db-accent)" }}
+                                >
+                                    <ChevronRightIcon class="h-4 w-4" />
+                                </button>
+                            </Show>
                             <button
                                 type="button"
                                 onClick={handleBack}
@@ -135,6 +149,16 @@ export function NotesListSidebar(props: { workspace: NotesWorkspace }) {
                                     </>
                                 )}
                             </Show>
+                            <button
+                                type="button"
+                                onClick={ws.openTemplatesPicker}
+                                title="New note from template"
+                                aria-label="New note from template"
+                                class="notes-action flex h-8 w-8 shrink-0 items-center justify-center rounded transition-colors hover:bg-[var(--db-surface2)] focus-visible:outline-2 focus-visible:outline-offset-1"
+                                style={{ color: "var(--db-text3)", "outline-color": "var(--db-accent)" }}
+                            >
+                                <TemplateIcon class="h-3.5 w-3.5" />
+                            </button>
                             <button
                                 type="button"
                                 onClick={ws.addNote}

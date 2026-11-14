@@ -1,5 +1,5 @@
 import { Title } from "@solidjs/meta";
-import { createEffect, createMemo, createSignal, Show, untrack, type ParentProps } from "solid-js";
+import { createEffect, createMemo, createSignal, onSettled, Show, untrack, type ParentProps } from "solid-js";
 
 import { DeleteConfirmDialog } from "~/components/dialogs/delete-confirm-dialog";
 import { NotesSearchDialog } from "~/components/dialogs/notes-search-dialog";
@@ -33,9 +33,21 @@ function NotesWorkspaceLayout(props: ParentProps) {
     const compact = createMemo(() => deviceLayout() === "mobile");
     const focused = () => ws.focusMode();
 
+    // Capture before CodeMirror's Mod-/ comment binding.
+    onSettled(() => {
+        const handleSidebarToggle = (event: KeyboardEvent) => {
+            if (compact() || !(event.ctrlKey || event.metaKey) || event.key !== "/") return;
+            event.preventDefault();
+            event.stopPropagation();
+            ws.toggleSidebar();
+        };
+        document.addEventListener("keydown", handleSidebarToggle, true);
+        return () => document.removeEventListener("keydown", handleSidebarToggle, true);
+    });
+
     const notebooksActive = () => {
         if (focused()) return false;
-        return compact() ? depth() === 0 : true;
+        return compact() ? depth() === 0 : ws.sidebarVisible();
     };
     const notesActive = () => {
         if (focused()) return false;
@@ -92,6 +104,7 @@ function NotesWorkspaceLayout(props: ParentProps) {
                     data-direction={direction()}
                     data-compact={compact() ? "true" : "false"}
                     data-focus={focused() ? "true" : "false"}
+                    data-sidebar-hidden={!compact() && !ws.sidebarVisible() ? "true" : "false"}
                 >
                     <div
                         class="notes-pane notes-pane-notebooks"

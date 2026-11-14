@@ -1,7 +1,7 @@
 import { For, Show } from "solid-js";
 
 import { ThemeToggle } from "~/components/ui/theme";
-import { EditIcon, SmallPlusIcon, TemplateIcon } from "~/components/ui/icons";
+import { ChevronRightIcon, EditIcon, SmallPlusIcon, TemplateIcon } from "~/components/ui/icons";
 import type { NotesWorkspace } from "~/lib/hooks/use-notes-workspace";
 import { notebookColor } from "~/lib/utils/notes";
 import { NotebookFilterTabs } from "./notebook-filter-tabs";
@@ -40,6 +40,17 @@ export function NotebookSidebar(props: { workspace: NotesWorkspace }) {
                     </span>
                     <div class="flex shrink-0 items-center gap-1">
                         <ThemeToggle />
+                        <button
+                            type="button"
+                            onClick={ws.toggleSidebar}
+                            title="Hide notebook sidebar (Ctrl/Cmd+/)"
+                            aria-label="Hide notebook sidebar"
+                            aria-expanded={ws.sidebarVisible() ? "true" : "false"}
+                            class="notes-desktop-only notes-action flex h-8 w-8 items-center justify-center rounded transition-colors hover:bg-[var(--db-surface2)] focus-visible:outline-2 focus-visible:outline-offset-2"
+                            style={{ color: "var(--db-text3)", "outline-color": "var(--db-accent)" }}
+                        >
+                            <ChevronRightIcon class="h-3.5 w-3.5 rotate-180" />
+                        </button>
                         <button
                             type="button"
                             onClick={() => ws.setSearchOpen(true)}
