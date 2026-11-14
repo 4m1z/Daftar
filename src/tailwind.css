@@ -320,6 +320,12 @@ body {
     color-scheme: dark;
 }
 
+/* Mermaid appends an unpositioned tooltip after the full-height workspace. */
+.mermaidTooltip {
+    top: 0;
+    left: 0;
+}
+
 /* ─── Notes workspace frame ────────────────────────────────────────────────
  * Persistent three-pane layout: notebooks | notes list | editor. The notes
  * pane is owned by layout.tsx (not the notebook route) so opening/closing a
