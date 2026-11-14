@@ -12,7 +12,7 @@ export default function Document(props: ParentProps) {
     return (
         <html
             lang="en"
-            class={`h-screen${dark ? " dark dashboard-dark" : ""}${theme === "omablue" ? " dashboard-omablue" : ""}`}
+            class={`h-dvh${dark ? " dark dashboard-dark" : ""}${theme === "omablue" ? " dashboard-omablue" : ""}`}
             data-theme={dark ? "night" : "light"}
             data-dashboard-theme={theme}
         >
@@ -23,7 +23,7 @@ export default function Document(props: ParentProps) {
                 <HydrationScript />
             </head>
             <body
-                class={`min-h-screen overflow-x-hidden bg-[var(--app-bg)]
+                class={`min-h-dvh overflow-x-hidden bg-[var(--app-bg)]
                     font-sans text-[var(--app-text)] antialiased`}
             >
                 {props.children}
