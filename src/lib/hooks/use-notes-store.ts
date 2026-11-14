@@ -213,7 +213,10 @@ export function useNotesStore(route: NotesRoute) {
         // Navigation can remount the workspace; wait for saved data to be available.
         void submit({ intent: "createNote", projectId: project.id, noteId, title: note.title, content: note.content })
             .then((saved) => {
-                if (saved && selectedProject() === project.id && selectedNote() === previousNoteId) route.pickNote(noteId);
+                if (
+                    saved && selectedProject() === project.id && selectedNote() === previousNoteId
+                    && activeProject()?.notes.some((note) => note.id === noteId)
+                ) route.pickNote(noteId);
             });
         return noteId;
     };

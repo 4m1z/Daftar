@@ -129,6 +129,25 @@ describe("useNotesStore creation", () => {
         expect(route.pickNote).not.toHaveBeenCalled();
         dispose();
     });
+
+    it("does not open a template note deleted while creation is pending", async () => {
+        const { store, route, dispose } = setup();
+        await flushEffects();
+        let resolveCreate!: (value: unknown) => void;
+        mocks.runAction.mockImplementationOnce(() => new Promise((resolve) => (resolveCreate = resolve)));
+
+        const id = store.addNoteFromTemplate({ name: "Meeting", content: "Agenda" });
+        await flushEffects();
+        store.deleteNote(id!);
+        await flushEffects();
+        expect(store.activeProject()?.notes.some((note) => note.id === id)).toBe(false);
+
+        resolveCreate({ ok: true });
+        await vi.waitFor(() => expect(store.isSaving()).toBe(false));
+        await flushEffects();
+        expect(route.pickNote).not.toHaveBeenCalled();
+        dispose();
+    });
 });
 
 describe("useNotesStore archiving", () => {
