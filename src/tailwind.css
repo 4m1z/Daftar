@@ -126,10 +126,10 @@ body {
 }
 
 .dashboard-dark {
-    --db-bg: hsl(0deg 0% 4%);
-    --db-surface: hsl(0deg 0% 9%);
-    --db-surface2: hsl(0deg 0% 9%);
-    --db-panel: hsl(0deg 0% 15%);
+    --db-bg: hsl(0deg 0% 2%);
+    --db-surface: hsl(0deg 0% 4%);
+    --db-surface2: hsl(0deg 0% 6%);
+    --db-panel: hsl(0deg 0% 8%);
     --db-border: hsl(0deg 0% 96% / 10%);
     --db-text: hsl(0deg 0% 98% / 87%);
     --db-text2: hsl(0deg 0% 98% / 60%);
@@ -250,17 +250,17 @@ body {
     --md-heading: hsl(0deg 0% 98% / 87%);
     --md-border: hsl(0deg 0% 96% / 10%);
     --md-border-strong: hsl(240deg 5% 26%);
-    --md-code-bg: rgba(255, 255, 255, 0.08);
+    --md-code-bg: var(--db-panel);
     --md-code-fg: hsl(0deg 0% 98% / 87%);
-    --md-block-bg: hsl(0deg 0% 25% / 20%);
+    --md-block-bg: var(--db-surface);
     --md-block-fg: hsl(0deg 0% 98% / 87%);
     --md-block-border: hsl(213deg 97% 87% / 10%);
     --md-quote-bar: hsl(240deg 5% 26%);
-    --md-quote-bg: rgba(255, 255, 255, 0.02);
+    --md-quote-bg: var(--db-surface);
     --md-quote-fg: hsl(0deg 0% 98% / 60%);
-    --md-table-head-bg: rgba(255, 255, 255, 0.15);
+    --md-table-head-bg: var(--db-panel);
     --md-table-head-fg: hsl(0deg 0% 98% / 87%);
-    --md-table-row-alt: rgba(255, 255, 255, 0.08);
+    --md-table-row-alt: var(--db-surface);
     --md-hr: hsl(0deg 0% 96% / 10%);
     --editor-fg: hsl(216deg 12% 84%);
     --editor-comment: hsl(218deg 11% 65%);
